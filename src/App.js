@@ -15,42 +15,49 @@ import Links from './components/links';
 import FAQ from './components/faq';
 import Banner from './components/banner';
 import PatientDB from './components/patientdb';
+import Resources from './components/resources'
 import DeepDive from './components/deepdive';
 
 const history = require('history').createBrowserHistory;
 
 function App() {
   const pages = [
+    // {
+    //   pageLink: '/',
+    //   view: Home,
+    //   displayName: 'Home',
+    //   animationDelayForNavbar: 0.2,
+    // },
     {
       pageLink: '/',
-      view: Home,
-      displayName: 'Home',
-      animationDelayForNavbar: 0.2,
-    },
-    {
-      pageLink: '/demographics',
-      view: PatientDB,
-      displayName: 'Demographics',
+      view: Resources,
+      displayName: 'Resources',
       animationDelayForNavbar: 0.3,
     },
-    {
-      pageLink: '/deepdive',
-      view: DeepDive,
-      displayName: 'Deep Dive',
-      animationDelayForNavbar: 0.4,
-    },
-    {
-      pageLink: '/links',
-      view: Links,
-      displayName: 'Helpful Links',
-      animationDelayForNavbar: 0.4,
-    },
-    {
-      pageLink: '/faq',
-      view: FAQ,
-      displayName: 'About',
-      animationDelayForNavbar: 0.5,
-    },
+    // {
+    //   pageLink: '/demographics',
+    //   view: PatientDB,
+    //   displayName: 'Demographics',
+    //   animationDelayForNavbar: 0.3,
+    // },
+    // {
+    //   pageLink: '/deepdive',
+    //   view: DeepDive,
+    //   displayName: 'Deep Dive',
+    //   animationDelayForNavbar: 0.4,
+    // },
+    // {
+    //   pageLink: '/links',
+    //   view: Links,
+    //   displayName: 'Helpful Links',
+    //   animationDelayForNavbar: 0.4,
+    // },
+    // {
+    //   pageLink: '/faq',
+    //   view: FAQ,
+    //   displayName: 'About',
+    //   animationDelayForNavbar: 0.5,
+    // },
   ];
 
   return (
