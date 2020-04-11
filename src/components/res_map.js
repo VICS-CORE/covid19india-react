@@ -211,6 +211,7 @@ export default function ({data, regionHighlighted}) {
   const [selectedRegion, setSelectedRegion] = useState({});
   const [currentHoveredRegion, setCurrentHoveredRegion] = useState({});
   const [currentMap, setCurrentMap] = useState(mapMeta.India);
+  const [currentResource, setCurrentResource] = useState('beds');
 
   useEffect(() => {
     const region = data.states[0];
@@ -222,40 +223,36 @@ export default function ({data, regionHighlighted}) {
   }
 
   const [statistic, currentMapData] = useMemo(() => {
-    const statistic = {total: 0, maxConfirmed: 0};
+    const statistic = {
+      total: 0,
+      maxResource: 0,
+    };
     let currentMapData = {};
+    let _stats = {};
 
     if (currentMap.mapType === MAP_TYPES.COUNTRY) {
-      currentMapData = data.states.reduce((acc, state) => {
-        const beds = parseInt(state.total.beds);
-        statistic.total += beds;
-        if (beds > statistic.maxConfirmed) {
-          statistic.maxConfirmed = beds;
-        }
-
-        acc[state.name] = state.total.beds;
-        return acc;
-      }, {});
+      _stats = data.states;
     } else if (currentMap.mapType === MAP_TYPES.STATE) {
-      const _stateObj = data.states.filter((t) => {
+      _stats = data.states.filter((t) => {
         return t.name === currentMap.name;
-      });
-      if (_stateObj.length === 1) {
-        const stateObj = _stateObj[0];
+      })[0];
 
-        currentMapData = stateObj.districts.reduce((acc, district) => {
-          const beds = parseInt(stateObj.total.beds);
-          statistic.total += beds;
-          if (beds > statistic.maxConfirmed) {
-            statistic.maxConfirmed = beds;
-          }
-          acc[district.name] = district.total.beds;
-          return acc;
-        }, {});
-      }
+      _stats = _stats.districts;
     }
+
+    currentMapData = _stats.reduce((acc, state) => {
+      const total = parseInt(state.total[currentResource]);
+
+      statistic.total += total;
+      statistic.maxResource =
+        total > statistic.maxResource ? total : statistic.maxResource;
+
+      acc[state.name] = total;
+      return acc;
+    }, {});
+
     return [statistic, currentMapData];
-  }, [currentMap, data]);
+  }, [currentMap, data, currentResource]);
 
   const setHoveredRegion = useCallback(
     (name, currentMap) => {
@@ -370,7 +367,20 @@ export default function ({data, regionHighlighted}) {
     },
     [setHoveredRegion, data]
   );
+
+  const changeResource = useCallback((name) => {
+    setCurrentResource(name);
+  }, []);
+
   const {name, lastupdatedtime} = currentHoveredRegion;
+
+  const resources = [
+    {name: 'beds', title: 'Beds', color: 'is-cherry'},
+    {name: 'icu_beds', title: 'ICU Beds', color: 'is-blue'},
+    {name: 'ventilators', title: 'Ventilators', color: 'is-blue'},
+    {name: 'doctors', title: 'Doctors', color: 'is-green'},
+    {name: 'nurses', title: 'Nurses', color: 'is-green'},
+  ];
 
   return (
     <div className="MapExplorer fadeInUp" style={{animationDelay: '1.5s'}}>
@@ -384,77 +394,27 @@ export default function ({data, regionHighlighted}) {
       </div>
 
       <div className="map-stats">
-        <div className="stats fadeInUp" style={{animationDelay: '2s'}}>
-          <h5>Beds</h5>
-          <div className="stats-bottom">
-            <h1>
-              {(currentHoveredRegion.total &&
-                currentHoveredRegion.total.beds) ||
-                '-'}
-            </h1>
-            <h6>{}</h6>
-          </div>
-        </div>
-
-        <div
-          className="stats is-blue fadeInUp"
-          style={{animationDelay: '2.1s'}}
-        >
-          <h5>ICU Beds</h5>
-          <div className="stats-bottom">
-            <h1>
-              {(currentHoveredRegion.total &&
-                currentHoveredRegion.total.icu_beds) ||
-                '-'}
-            </h1>
-            <h6>{}</h6>
-          </div>
-        </div>
-
-        <div
-          className="stats is-blue fadeInUp"
-          style={{animationDelay: '2.2s'}}
-        >
-          <h5>Ventilators</h5>
-          <div className="stats-bottom">
-            <h1>
-              {(currentHoveredRegion.total &&
-                currentHoveredRegion.total.ventilators) ||
-                '-'}
-            </h1>
-            <h6>{}</h6>
-          </div>
-        </div>
-
-        <div
-          className="stats is-green fadeInUp"
-          style={{animationDelay: '2.3s'}}
-        >
-          <h5>Doctors</h5>
-          <div className="stats-bottom">
-            <h1>
-              {(currentHoveredRegion.total &&
-                currentHoveredRegion.total.doctors) ||
-                '-'}
-            </h1>
-            <h6>{}</h6>
-          </div>
-        </div>
-
-        <div
-          className="stats is-green fadeInUp"
-          style={{animationDelay: '2.4s'}}
-        >
-          <h5>Nurses</h5>
-          <div className="stats-bottom">
-            <h1>
-              {(currentHoveredRegion.total &&
-                currentHoveredRegion.total.nurses) ||
-                '-'}
-            </h1>
-            <h6>{}</h6>
-          </div>
-        </div>
+        {resources.map((resource, index) => {
+          const className = 'stats fadeInUp ' + resource.color;
+          return (
+            <div
+              key={resource.name}
+              className={className}
+              style={{animationDelay: '2s'}}
+              onClick={() => changeResource(resource.name)}
+            >
+              <h5>{resource.title}</h5>
+              <div className="stats-bottom">
+                <h1>
+                  {(currentHoveredRegion.total &&
+                    currentHoveredRegion.total[resource.name]) ||
+                    '-'}
+                </h1>
+                <h6>{}</h6>
+              </div>
+            </div>
+          );
+        })}
       </div>
 
       <div className="meta fadeInUp" style={{animationDelay: '2.5s'}}>
@@ -509,6 +469,7 @@ export default function ({data, regionHighlighted}) {
         setHoveredRegion={setHoveredRegion}
         changeMap={switchMapToState}
         selectedRegion={selectedRegion}
+        currentResource={currentResource}
       />
     </div>
   );

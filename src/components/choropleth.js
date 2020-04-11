@@ -16,6 +16,7 @@ function ChoroplethMap({
   mapMeta,
   changeMap,
   selectedRegion,
+  currentResource,
 }) {
   const choroplethMap = useRef(null);
   const [svgRenderCount, setSvgRenderCount] = useState(0);
@@ -73,7 +74,7 @@ function ChoroplethMap({
             n === 0
               ? '#ffffff'
               : d3.interpolateReds(
-                  (maxInterpolation * n) / (statistic.maxConfirmed || 0.001)
+                  (maxInterpolation * n) / (statistic.maxResource || 0.001)
                 );
           return color;
         })
@@ -132,7 +133,7 @@ function ChoroplethMap({
       mapData,
       mapMeta,
       statistic.total,
-      statistic.maxConfirmed,
+      statistic.maxResource,
       changeMap,
       setHoveredRegion,
     ]
@@ -153,7 +154,7 @@ function ChoroplethMap({
     const maxInterpolation = 0.8;
     const color = d3
       .scaleSequential(d3.interpolateReds)
-      .domain([0, statistic.maxConfirmed / maxInterpolation || 10]);
+      .domain([0, statistic.maxResource / maxInterpolation || 10]);
 
     let cells = null;
     let label = null;
@@ -171,7 +172,7 @@ function ChoroplethMap({
 
     const numCells = 6;
     const delta = Math.floor(
-      (statistic.maxConfirmed < numCells ? numCells : statistic.maxConfirmed) /
+      (statistic.maxResource < numCells ? numCells : statistic.maxResource) /
         (numCells - 1)
     );
 
@@ -188,7 +189,7 @@ function ChoroplethMap({
       .cells(cells)
       .titleWidth(3)
       .labels(label)
-      .title('Confirmed Cases')
+      .title(currentResource)
       .orient('vertical')
       .scale(color);
 
@@ -197,7 +198,7 @@ function ChoroplethMap({
       .call(legendLinear)
       .selectAll('text')
       .style('font-size', '10px');
-  }, [statistic.maxConfirmed]);
+  }, [currentResource, statistic.maxResource]);
 
   useEffect(() => {
     (async () => {
