@@ -229,7 +229,7 @@ export default function ({data, regionHighlighted}) {
       currentMapData = data.states.reduce((acc, state) => {
         const beds = parseInt(state.total.beds);
         statistic.total += beds;
-        if (beds < statistic.maxConfirmed) {
+        if (beds > statistic.maxConfirmed) {
           statistic.maxConfirmed = beds;
         }
 
@@ -246,7 +246,7 @@ export default function ({data, regionHighlighted}) {
         currentMapData = stateObj.districts.reduce((acc, district) => {
           const beds = parseInt(stateObj.total.beds);
           statistic.total += beds;
-          if (beds < statistic.maxConfirmed) {
+          if (beds > statistic.maxConfirmed) {
             statistic.maxConfirmed = beds;
           }
           acc[district.name] = district.total.beds;
