@@ -5,6 +5,7 @@ import {
   sliceTimeseriesFromEnd,
 } from '../utils/common-functions';
 import {useResizeObserver} from '../utils/hooks';
+import {formatNumber} from '../utils/common-functions';
 
 function TimeSeries(props) {
   const [lastDaysCount, setLastDaysCount] = useState(
@@ -366,6 +367,15 @@ function TimeSeries(props) {
   const chartKey2 = chartType === 1 ? 'totalrecovered' : 'dailyrecovered';
   const chartKey3 = chartType === 1 ? 'totaldeceased' : 'dailydeceased';
 
+  // Function for calculate increased/decreased count for each type of data
+  const currentStatusCount = (chartType) => {
+    if (timeseries.length <= 0 || index === 0) return '';
+    const currentDiff =
+      timeseries[index][chartType] - timeseries[index - 1][chartType];
+    const formatedDiff = formatNumber(currentDiff);
+    return currentDiff >= 0 ? `+${formatedDiff}` : formatedDiff;
+  };
+
   return (
     <div
       className="TimeSeries-Parent fadeInUp"
@@ -376,25 +386,11 @@ function TimeSeries(props) {
           <div className="stats">
             <h5 className={`${!moving ? 'title' : ''}`}>Confirmed</h5>
             <h5 className={`${moving ? 'title' : ''}`}>
-              {isYesterday
-                ? `${datapoint['date']} Yesterday`
-                : datapoint['date']}
+              {`${datapoint['date']}${isYesterday ? ' Yesterday ' : ' '}`}
             </h5>
             <div className="stats-bottom">
-              <h2>{datapoint[chartKey1]}</h2>
-              <h6>
-                {' '}
-                {timeseries.length > 0 && index !== 0
-                  ? timeseries[index][chartKey1] -
-                      timeseries[index - 1][chartKey1] >=
-                    0
-                    ? '+' +
-                      (timeseries[index][chartKey1] -
-                        timeseries[index - 1][chartKey1])
-                    : timeseries[index][chartKey1] -
-                      timeseries[index - 1][chartKey1]
-                  : ''}{' '}
-              </h6>
+              <h2>{formatNumber(datapoint[chartKey1])}</h2>
+              <h6>{currentStatusCount(chartKey1)}</h6>
             </div>
           </div>
           <svg ref={svgRef1} preserveAspectRatio="xMidYMid meet" />
@@ -404,24 +400,11 @@ function TimeSeries(props) {
           <div className="stats is-green">
             <h5 className={`${!moving ? 'title' : ''}`}>Recovered</h5>
             <h5 className={`${moving ? 'title' : ''}`}>
-              {isYesterday
-                ? `${datapoint['date']} Yesterday`
-                : datapoint['date']}
+              {`${datapoint['date']}${isYesterday ? ' Yesterday ' : ' '}`}
             </h5>
             <div className="stats-bottom">
-              <h2>{datapoint[chartKey2]}</h2>
-              <h6>
-                {timeseries.length > 0 && index !== 0
-                  ? timeseries[index][chartKey2] -
-                      timeseries[index - 1][chartKey2] >=
-                    0
-                    ? '+' +
-                      (timeseries[index][chartKey2] -
-                        timeseries[index - 1][chartKey2])
-                    : timeseries[index][chartKey2] -
-                      timeseries[index - 1][chartKey2]
-                  : ''}
-              </h6>
+              <h2>{formatNumber(datapoint[chartKey2])}</h2>
+              <h6>{currentStatusCount(chartKey2)}</h6>
             </div>
           </div>
           <svg ref={svgRef2} preserveAspectRatio="xMidYMid meet" />
@@ -431,24 +414,11 @@ function TimeSeries(props) {
           <div className="stats is-gray">
             <h5 className={`${!moving ? 'title' : ''}`}>Deceased</h5>
             <h5 className={`${moving ? 'title' : ''}`}>
-              {isYesterday
-                ? `${datapoint['date']} Yesterday`
-                : datapoint['date']}
+              {`${datapoint['date']}${isYesterday ? ' Yesterday ' : ' '}`}
             </h5>
             <div className="stats-bottom">
-              <h2>{datapoint[chartKey3]}</h2>
-              <h6>
-                {timeseries.length > 0 && index !== 0
-                  ? timeseries[index][chartKey3] -
-                      timeseries[index - 1][chartKey3] >=
-                    0
-                    ? '+' +
-                      (timeseries[index][chartKey3] -
-                        timeseries[index - 1][chartKey3])
-                    : timeseries[index][chartKey3] -
-                      timeseries[index - 1][chartKey3]
-                  : ''}
-              </h6>
+              <h2>{formatNumber(datapoint[chartKey3])}</h2>
+              <h6>{currentStatusCount(chartKey3)}</h6>
             </div>
           </div>
           <svg ref={svgRef3} preserveAspectRatio="xMidYMid meet" />

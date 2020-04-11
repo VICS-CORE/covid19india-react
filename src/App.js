@@ -17,6 +17,7 @@ import Banner from './components/banner';
 import PatientDB from './components/patientdb';
 import Resources from './components/resources'
 import DeepDive from './components/deepdive';
+/* import PatientDB from './components/patientdb';*/
 
 const history = require('history').createBrowserHistory;
 

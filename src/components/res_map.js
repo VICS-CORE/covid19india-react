@@ -469,6 +469,7 @@ export default function ({data, regionHighlighted}) {
         setHoveredRegion={setHoveredRegion}
         changeMap={switchMapToState}
         selectedRegion={selectedRegion}
+        setSelectedRegion={setSelectedRegion}
         currentResource={currentResource}
       />
     </div>
