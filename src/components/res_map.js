@@ -237,18 +237,22 @@ export default function ({data, regionHighlighted}) {
         return acc;
       }, {});
     } else if (currentMap.mapType === MAP_TYPES.STATE) {
-      const stateObj = data.states.filter((t) => {
+      const _stateObj = data.states.filter((t) => {
         return t.name === currentMap.name;
-      })[0];
-      currentMapData = stateObj.districts.reduce((acc, district) => {
-        const beds = parseInt(stateObj.total.beds);
-        statistic.total += beds;
-        if (beds < statistic.maxConfirmed) {
-          statistic.maxConfirmed = beds;
-        }
-        acc[district.name] = district.total.beds;
-        return acc;
-      }, {});
+      });
+      if (_stateObj.length === 1) {
+        const stateObj = _stateObj[0];
+
+        currentMapData = stateObj.districts.reduce((acc, district) => {
+          const beds = parseInt(stateObj.total.beds);
+          statistic.total += beds;
+          if (beds < statistic.maxConfirmed) {
+            statistic.maxConfirmed = beds;
+          }
+          acc[district.name] = district.total.beds;
+          return acc;
+        }, {});
+      }
     }
     return [statistic, currentMapData];
   }, [currentMap, data]);
@@ -256,11 +260,14 @@ export default function ({data, regionHighlighted}) {
   const setHoveredRegion = useCallback(
     (name, currentMap) => {
       if (currentMap.mapType === MAP_TYPES.COUNTRY) {
-        setCurrentHoveredRegion(
-          data.states.filter((state) => {
-            return name === state.name;
-          })[0]
-        );
+        const filteredData = data.states.filter((state) => {
+          return name === state.name;
+        });
+        if (filteredData.length === 1) {
+          setCurrentHoveredRegion(filteredData[0]);
+        } else {
+          setCurrentHoveredRegion({});
+        }
       } else if (currentMap.mapType === MAP_TYPES.STATE) {
         const stateObj = data.states.filter((t) => {
           return t.name === currentMap.name;
@@ -276,8 +283,8 @@ export default function ({data, regionHighlighted}) {
               icu_beds: 0,
               ventilators: 0,
               doctors: 0,
-              nurses: 0
-            }
+              nurses: 0,
+            },
           };
         }
         setCurrentHoveredRegion(districtData);
@@ -343,18 +350,22 @@ export default function ({data, regionHighlighted}) {
       if (newMap.mapType === MAP_TYPES.COUNTRY) {
         setHoveredRegion(data.states[0].name, newMap);
       } else if (newMap.mapType === MAP_TYPES.STATE) {
-        const stateObj = data.states.filter((t) => {
+        const _stateObj = data.states.filter((t) => {
           return t.name === name;
-        })[0];
-        let districtData = stateObj.districts.filter((t) => {
-          return t.name === name;
-        })[0];
-        const topDistrict = stateObj.districts
-          .filter((state) => state.name !== 'Unknown')
-          .sort((a, b) => {
-            return a.total.beds - b.total.beds;
-          })[0];
-        setHoveredRegion(topDistrict, newMap);
+        });
+
+        if (_stateObj.length === 1) {
+          const stateObj = _stateObj[0];
+          // let districtData = stateObj.districts.filter((t) => {
+          //  return t.name === name;
+          // })[0];
+          const topDistrict = stateObj.districts
+            .filter((state) => state.name !== 'Unknown')
+            .sort((a, b) => {
+              return a.total.beds - b.total.beds;
+            })[0];
+          setHoveredRegion(topDistrict, newMap);
+        }
       }
     },
     [setHoveredRegion, data]
@@ -376,7 +387,11 @@ export default function ({data, regionHighlighted}) {
         <div className="stats fadeInUp" style={{animationDelay: '2s'}}>
           <h5>Beds</h5>
           <div className="stats-bottom">
-            <h1>{currentHoveredRegion.total && currentHoveredRegion.total.beds || '-'}</h1>
+            <h1>
+              {(currentHoveredRegion.total &&
+                currentHoveredRegion.total.beds) ||
+                '-'}
+            </h1>
             <h6>{}</h6>
           </div>
         </div>
@@ -387,7 +402,11 @@ export default function ({data, regionHighlighted}) {
         >
           <h5>ICU Beds</h5>
           <div className="stats-bottom">
-            <h1>{currentHoveredRegion.total && currentHoveredRegion.total.icu_beds || '-'}</h1>
+            <h1>
+              {(currentHoveredRegion.total &&
+                currentHoveredRegion.total.icu_beds) ||
+                '-'}
+            </h1>
             <h6>{}</h6>
           </div>
         </div>
@@ -398,7 +417,11 @@ export default function ({data, regionHighlighted}) {
         >
           <h5>Ventilators</h5>
           <div className="stats-bottom">
-            <h1>{currentHoveredRegion.total && currentHoveredRegion.total.ventilators || '-'}</h1>
+            <h1>
+              {(currentHoveredRegion.total &&
+                currentHoveredRegion.total.ventilators) ||
+                '-'}
+            </h1>
             <h6>{}</h6>
           </div>
         </div>
@@ -409,11 +432,14 @@ export default function ({data, regionHighlighted}) {
         >
           <h5>Doctors</h5>
           <div className="stats-bottom">
-            <h1>{currentHoveredRegion.total && currentHoveredRegion.total.doctors || '-'}</h1>
+            <h1>
+              {(currentHoveredRegion.total &&
+                currentHoveredRegion.total.doctors) ||
+                '-'}
+            </h1>
             <h6>{}</h6>
           </div>
         </div>
-      
 
         <div
           className="stats is-green fadeInUp"
@@ -421,7 +447,11 @@ export default function ({data, regionHighlighted}) {
         >
           <h5>Nurses</h5>
           <div className="stats-bottom">
-            <h1>{currentHoveredRegion.total && currentHoveredRegion.total.nurses || '-'}</h1>
+            <h1>
+              {(currentHoveredRegion.total &&
+                currentHoveredRegion.total.nurses) ||
+                '-'}
+            </h1>
             <h6>{}</h6>
           </div>
         </div>
