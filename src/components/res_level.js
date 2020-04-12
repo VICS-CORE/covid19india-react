@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react';
+import {formatNumber} from '../utils/common-functions';
 
 function ResourcesLevel(props) {
   const [data, setData] = useState(props.data);
@@ -32,7 +33,7 @@ function ResourcesLevel(props) {
         style={{animationDelay: '1s'}}
       >
         <h5>Beds</h5>
-        <h1>{beds} </h1>
+        <h1>{formatNumber(beds)} </h1>
       </div>
 
       <div
@@ -40,7 +41,7 @@ function ResourcesLevel(props) {
         style={{animationDelay: '1.1s'}}
       >
         <h5 className="heading">ICU Beds</h5>
-        <h1 className="title has-text-info">{icu_beds}</h1>
+        <h1 className="title has-text-info">{formatNumber(icu_beds)}</h1>
       </div>
 
       <div
@@ -48,7 +49,7 @@ function ResourcesLevel(props) {
         style={{animationDelay: '1.2s'}}
       >
         <h5 className="heading">Ventilators</h5>
-        <h1 className="title has-text-success">{ventilators} </h1>
+        <h1 className="title has-text-success">{formatNumber(ventilators)} </h1>
       </div>
 
       <div
@@ -56,7 +57,7 @@ function ResourcesLevel(props) {
         style={{animationDelay: '1.3s'}}
       >
         <h5 className="heading">Doctors</h5>
-        <h1 className="title has-text-grey">{doctors}</h1>
+        <h1 className="title has-text-grey">{formatNumber(doctors)}</h1>
       </div>
 
       <div
@@ -64,7 +65,7 @@ function ResourcesLevel(props) {
         style={{animationDelay: '1.4s'}}
       >
         <h5 className="heading">Nurses</h5>
-        <h1 className="title has-text-grey">{nurses}</h1>
+        <h1 className="title has-text-grey">{formatNumber(nurses)}</h1>
       </div>
     </div>
   );

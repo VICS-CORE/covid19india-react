@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useMemo, useCallback} from 'react';
 import ChoroplethMap from './choropleth';
 import {MAP_TYPES, MAPS_DIR} from '../constants';
-import {formatDate, formatDateAbsolute} from '../utils/common-functions';
+import {formatDate, formatDateAbsolute, formatNumber} from '../utils/common-functions';
 import {formatDistance} from 'date-fns';
 
 const mapMeta = {
@@ -432,7 +432,7 @@ export default function ({data, regionHighlighted}) {
               <div className="stats-bottom">
                 <h1>
                   {(currentHoveredRegion.total &&
-                    currentHoveredRegion.total[resource.name]) ||
+                    formatNumber(currentHoveredRegion.total[resource.name])) ||
                     '-'}
                 </h1>
                 <h6>{}</h6>
