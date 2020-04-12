@@ -861,6 +861,13 @@ h6 {
     h4,
     h5 { color: $gray-mid; }
   }
+
+  .is-orange {
+    h1 { color: $orange; }
+
+    h4,
+    h5 { color: $orange-mid; }
+  }
 }
 
 abbr {
@@ -880,6 +887,10 @@ abbr {
 
   &.is-gray {
     color: $gray;
+  }
+
+  &.is-orange {
+    color: $orange;
   }
 }
 

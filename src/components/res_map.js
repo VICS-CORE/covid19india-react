@@ -208,11 +208,36 @@ const mapMeta = {
 };
 
 const resources = [
-  {name: 'beds', title: 'Beds', color: 'is-cherry'},
-  {name: 'icu_beds', title: 'ICU Beds', color: 'is-blue'},
-  {name: 'ventilators', title: 'Ventilators', color: 'is-blue'},
-  {name: 'doctors', title: 'Doctors', color: 'is-green'},
-  {name: 'nurses', title: 'Nurses', color: 'is-green'},
+  {
+    name: 'beds',
+    title: 'Beds',
+    className: 'is-green',
+    color: 'interpolateGreens',
+  },
+  {
+    name: 'icu_beds',
+    title: 'ICU Beds',
+    className: 'is-orange',
+    color: 'interpolateOranges',
+  },
+  {
+    name: 'ventilators',
+    title: 'Ventilators',
+    className: 'is-cherry',
+    color: 'interpolateReds',
+  },
+  {
+    name: 'doctors',
+    title: 'Doctors',
+    className: 'is-blue',
+    color: 'interpolateBlues',
+  },
+  {
+    name: 'nurses',
+    title: 'Nurses',
+    className: 'is-purple',
+    color: 'interpolatePurples',
+  },
 ];
 
 export default function ({data, regionHighlighted}) {
@@ -395,7 +420,7 @@ export default function ({data, regionHighlighted}) {
 
       <div className="map-stats">
         {resources.map((resource, index) => {
-          const className = 'stats fadeInUp ' + resource.color;
+          const className = 'stats fadeInUp ' + resource.className;
           return (
             <div
               key={resource.name}

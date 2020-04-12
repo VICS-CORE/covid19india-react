@@ -75,7 +75,7 @@ function ChoroplethMap({
           const color =
             n === 0
               ? '#ffffff'
-              : d3.interpolateReds(
+              : d3[currentResource.color](
                   (maxInterpolation * n) / (statistic.maxResource || 0.001)
                 );
           return color;
@@ -126,13 +126,14 @@ function ChoroplethMap({
         );
     },
     [
-      mapData,
       mapMeta,
-      statistic.total,
-      statistic.maxResource,
-      changeMap,
       setHoveredRegion,
       setSelectedRegion,
+      mapData,
+      currentResource.color,
+      statistic.maxResource,
+      statistic.total,
+      changeMap,
     ]
   );
 
@@ -150,7 +151,7 @@ function ChoroplethMap({
     // Colorbar
     const maxInterpolation = 0.8;
     const color = d3
-      .scaleSequential(d3.interpolateReds)
+      .scaleSequential(d3[currentResource.color])
       .domain([0, statistic.maxResource / maxInterpolation || 10]);
 
     let cells = null;
