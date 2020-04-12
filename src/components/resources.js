@@ -1,14 +1,44 @@
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import {formatDistance} from 'date-fns';
-import {
-  formatDate,
-  formatDateAbsolute,
-} from '../utils/common-functions';
+import {formatDate, formatDateAbsolute} from '../utils/common-functions';
 
 import ResourcesTable from './res_table';
 import ResourcesLevel from './res_level';
 import ResourcesMap from './res_map';
+
+const resources = [
+  {
+    name: 'beds',
+    title: 'Beds',
+    className: 'is-green',
+    color: 'interpolateGreens',
+  },
+  {
+    name: 'icu_beds',
+    title: 'ICU Beds',
+    className: 'is-orange',
+    color: 'interpolateOranges',
+  },
+  {
+    name: 'ventilators',
+    title: 'Ventilators',
+    className: 'is-cherry',
+    color: 'interpolateReds',
+  },
+  {
+    name: 'doctors',
+    title: 'Doctors',
+    className: 'is-blue',
+    color: 'interpolateBlues',
+  },
+  {
+    name: 'nurses',
+    title: 'Nurses',
+    className: 'is-purple',
+    color: 'interpolatePurples',
+  },
+];
 
 function Resources(props) {
   const [resourcesData, setResourcesData] = useState({});
@@ -52,7 +82,9 @@ function Resources(props) {
             <div className="header-mid">
               <div className="titles">
                 <h1>Medical Resources</h1>
-                <h6 style={{fontWeight: 600}}>Proposed addition to covid tracker</h6>
+                <h6 style={{fontWeight: 600}}>
+                  Proposed addition to covid tracker
+                </h6>
               </div>
               <div className="last-update">
                 <h6>Last Updated</h6>
@@ -73,7 +105,7 @@ function Resources(props) {
             </div>
           </div>
 
-          <ResourcesLevel data={resourcesData} />
+          <ResourcesLevel data={resourcesData} resources={resources}/>
           <ResourcesTable
             data={resourcesData}
             onHighlightState={onHighlightState}
@@ -87,12 +119,12 @@ function Resources(props) {
               <ResourcesMap
                 data={resourcesData}
                 regionHighlighted={regionHighlighted}
+                resources={resources}
               />
             </React.Fragment>
           )}
         </div>
       </div>
-
     </React.Fragment>
   );
 }

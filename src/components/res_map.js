@@ -1,7 +1,11 @@
 import React, {useState, useEffect, useMemo, useCallback} from 'react';
 import ChoroplethMap from './choropleth';
 import {MAP_TYPES, MAPS_DIR} from '../constants';
-import {formatDate, formatDateAbsolute} from '../utils/common-functions';
+import {
+  formatDate,
+  formatDateAbsolute,
+  formatNumber,
+} from '../utils/common-functions';
 import {formatDistance} from 'date-fns';
 
 const mapMeta = {
@@ -207,40 +211,7 @@ const mapMeta = {
   },
 };
 
-const resources = [
-  {
-    name: 'beds',
-    title: 'Beds',
-    className: 'is-green',
-    color: 'interpolateGreens',
-  },
-  {
-    name: 'icu_beds',
-    title: 'ICU Beds',
-    className: 'is-orange',
-    color: 'interpolateOranges',
-  },
-  {
-    name: 'ventilators',
-    title: 'Ventilators',
-    className: 'is-cherry',
-    color: 'interpolateReds',
-  },
-  {
-    name: 'doctors',
-    title: 'Doctors',
-    className: 'is-blue',
-    color: 'interpolateBlues',
-  },
-  {
-    name: 'nurses',
-    title: 'Nurses',
-    className: 'is-purple',
-    color: 'interpolatePurples',
-  },
-];
-
-export default function ({data, regionHighlighted}) {
+export default function ({data, regionHighlighted, resources}) {
   const [selectedRegion, setSelectedRegion] = useState({});
   const [currentHoveredRegion, setCurrentHoveredRegion] = useState({});
   const [currentMap, setCurrentMap] = useState(mapMeta.India);
@@ -432,7 +403,7 @@ export default function ({data, regionHighlighted}) {
               <div className="stats-bottom">
                 <h1>
                   {(currentHoveredRegion.total &&
-                    currentHoveredRegion.total[resource.name]) ||
+                    formatNumber(currentHoveredRegion.total[resource.name])) ||
                     '-'}
                 </h1>
                 <h6>{}</h6>
