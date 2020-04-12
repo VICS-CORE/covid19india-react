@@ -207,11 +207,19 @@ const mapMeta = {
   },
 };
 
+const resources = [
+  {name: 'beds', title: 'Beds', color: 'is-cherry'},
+  {name: 'icu_beds', title: 'ICU Beds', color: 'is-blue'},
+  {name: 'ventilators', title: 'Ventilators', color: 'is-blue'},
+  {name: 'doctors', title: 'Doctors', color: 'is-green'},
+  {name: 'nurses', title: 'Nurses', color: 'is-green'},
+];
+
 export default function ({data, regionHighlighted}) {
   const [selectedRegion, setSelectedRegion] = useState({});
   const [currentHoveredRegion, setCurrentHoveredRegion] = useState({});
   const [currentMap, setCurrentMap] = useState(mapMeta.India);
-  const [currentResource, setCurrentResource] = useState('beds');
+  const [currentResource, setCurrentResource] = useState(resources[0]);
 
   useEffect(() => {
     const region = data.states[0];
@@ -241,7 +249,7 @@ export default function ({data, regionHighlighted}) {
     }
 
     currentMapData = _stats.reduce((acc, state) => {
-      const total = parseInt(state.total[currentResource]);
+      const total = parseInt(state.total[currentResource.name]);
 
       statistic.total += total;
       statistic.maxResource =
@@ -368,19 +376,11 @@ export default function ({data, regionHighlighted}) {
     [setHoveredRegion, data]
   );
 
-  const changeResource = useCallback((name) => {
-    setCurrentResource(name);
+  const changeResource = useCallback((resource) => {
+    setCurrentResource(resource);
   }, []);
 
   const {name, lastupdatedtime} = currentHoveredRegion;
-
-  const resources = [
-    {name: 'beds', title: 'Beds', color: 'is-cherry'},
-    {name: 'icu_beds', title: 'ICU Beds', color: 'is-blue'},
-    {name: 'ventilators', title: 'Ventilators', color: 'is-blue'},
-    {name: 'doctors', title: 'Doctors', color: 'is-green'},
-    {name: 'nurses', title: 'Nurses', color: 'is-green'},
-  ];
 
   return (
     <div className="MapExplorer fadeInUp" style={{animationDelay: '1.5s'}}>
@@ -401,7 +401,7 @@ export default function ({data, regionHighlighted}) {
               key={resource.name}
               className={className}
               style={{animationDelay: '2s'}}
-              onClick={() => changeResource(resource.name)}
+              onClick={() => changeResource(resource)}
             >
               <h5>{resource.title}</h5>
               <div className="stats-bottom">
