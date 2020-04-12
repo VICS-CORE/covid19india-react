@@ -6,6 +6,7 @@ import {formatDate, formatDateAbsolute} from '../utils/common-functions';
 import ResourcesTable from './res_table';
 import ResourcesLevel from './res_level';
 import ResourcesMap from './res_map';
+import TimeSeries from './res_timeseries';
 
 const resources = [
   {
@@ -43,7 +44,12 @@ const resources = [
 function Resources(props) {
   const [resourcesData, setResourcesData] = useState({});
   const [fetched, setFetched] = useState(false);
+  const [graphOption, setGraphOption] = useState(1);
   const [lastUpdated, setLastUpdated] = useState('');
+  const [timeseries, setTimeseries] = useState({});
+  // const [activityLog, setActivityLog] = useState([]);
+  const [timeseriesMode, setTimeseriesMode] = useState(false);
+  const [timeseriesLogMode, setTimeseriesLogMode] = useState(false);
   const [regionHighlighted, setRegionHighlighted] = useState(undefined);
 
   useEffect(() => {
@@ -54,12 +60,35 @@ function Resources(props) {
 
   const getResourcesData = async () => {
     try {
-      const [response] = await Promise.all([
+      const [response, responseTimeline] = await Promise.all([
         axios.get('https://demo6934508.mockable.io/med_resources.json'),
+        axios.get(
+          'https://demo6934508.mockable.io/med_resources_timeline.json'
+        ),
       ]);
       setResourcesData(response.data);
       setLastUpdated(response.data.last_updated_time);
       setFetched(true);
+      const timelineUpdated = [];
+      Object.keys(responseTimeline.data.timeline).map(function (key, index) {
+        const row = {};
+        responseTimeline.data.legend.map(function (subkey, index2) {
+          row[subkey] = responseTimeline.data.timeline[key][index2];
+          row['u' + subkey] = 0;
+        });
+        if (index > 0) {
+          responseTimeline.data.legend.map(function (subkey, index2) {
+            row['u' + subkey] =
+              responseTimeline.data.timeline[key][index2] -
+              responseTimeline.data.timeline[
+                Object.keys(responseTimeline.data.timeline)[index - 1]
+              ][index2];
+          });
+        }
+        row['date'] = new Date(key);
+        timelineUpdated.push(row);
+      });
+      setTimeseries(timelineUpdated);
     } catch (err) {
       console.log(err);
     }
@@ -105,7 +134,7 @@ function Resources(props) {
             </div>
           </div>
 
-          <ResourcesLevel data={resourcesData} resources={resources}/>
+          <ResourcesLevel data={resourcesData} resources={resources} />
           <ResourcesTable
             data={resourcesData}
             onHighlightState={onHighlightState}
@@ -120,6 +149,70 @@ function Resources(props) {
                 data={resourcesData}
                 regionHighlighted={regionHighlighted}
                 resources={resources}
+              />
+
+              <div
+                className="timeseries-header fadeInUp"
+                style={{animationDelay: '2.5s'}}
+              >
+                <h1>Spread Trends</h1>
+                <div className="tabs">
+                  <div
+                    className={`tab ${graphOption === 1 ? 'focused' : ''}`}
+                    onClick={() => {
+                      setGraphOption(1);
+                    }}
+                  >
+                    <h4>Cumulative</h4>
+                  </div>
+                  <div
+                    className={`tab ${graphOption === 2 ? 'focused' : ''}`}
+                    onClick={() => {
+                      setGraphOption(2);
+                    }}
+                  >
+                    <h4>Daily</h4>
+                  </div>
+                </div>
+
+                <div className="scale-modes">
+                  <label>Scale Modes</label>
+                  <div className="timeseries-mode">
+                    <label htmlFor="timeseries-mode">Uniform</label>
+                    <input
+                      type="checkbox"
+                      checked={timeseriesMode}
+                      className="switch"
+                      aria-label="Checked by default to scale uniformly."
+                      onChange={(event) => {
+                        setTimeseriesMode(!timeseriesMode);
+                      }}
+                    />
+                  </div>
+                  <div
+                    className={`timeseries-logmode ${
+                      graphOption !== 1 ? 'disabled' : ''
+                    }`}
+                  >
+                    <label htmlFor="timeseries-logmode">Logarithmic</label>
+                    <input
+                      type="checkbox"
+                      checked={graphOption === 1 && timeseriesLogMode}
+                      className="switch"
+                      disabled={graphOption !== 1}
+                      onChange={(event) => {
+                        setTimeseriesLogMode(!timeseriesLogMode);
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <TimeSeries
+                timeseries={timeseries}
+                type={graphOption}
+                mode={timeseriesMode}
+                logMode={timeseriesLogMode}
               />
             </React.Fragment>
           )}

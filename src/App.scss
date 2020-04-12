@@ -1642,6 +1642,13 @@ input.switch:checked::after {
       h2,
       h6 { color: $orange; }
     }
+
+    &.is-purple {
+      h5 { color: $purple-mid; }
+
+      h2,
+      h6 { color: $purple; }
+    }
   }
 
   .svg-parent {
@@ -1685,6 +1692,57 @@ input.switch:checked::after {
 
         text {
           color: $green-mid;
+          stroke: transparent;
+        }
+      }
+    }
+
+    &.is-purple {
+      background: $purple-light;
+
+      svg {
+        .domain,
+        .tick,
+        line {
+          stroke: $purple;
+        }
+
+        text {
+          color: $purple-mid;
+          stroke: transparent;
+        }
+      }
+    }
+
+    &.is-orange {
+      background: $orange-light;
+
+      svg {
+        .domain,
+        .tick,
+        line {
+          stroke: $orange;
+        }
+
+        text {
+          color: $orange-mid;
+          stroke: transparent;
+        }
+      }
+    }
+
+    &.is-blue {
+      background: $blue-light;
+
+      svg {
+        .domain,
+        .tick,
+        line {
+          stroke: $blue;
+        }
+
+        text {
+          color: $blue-mid;
           stroke: transparent;
         }
       }
