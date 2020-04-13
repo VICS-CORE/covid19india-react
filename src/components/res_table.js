@@ -1,11 +1,11 @@
 import React, {useState, useEffect} from 'react';
-import {Link} from 'react-router-dom';
-
 import ResourcesRow from './res_row';
 
 function ResourcesTable(props) {
   const [data, setData] = useState(props.data);
   const [revealedStates, setRevealedStates] = useState({});
+  const [resourcesMeta, setResourceMeta] = useState(props.resourcesMeta);
+  const [date, setDate] = useState(props.date);
   const [sortData, setSortData] = useState({
     sortColumn: localStorage.getItem('resState.sortColumn')
       ? localStorage.getItem('resState.sortColumn')
@@ -22,15 +22,17 @@ function ResourcesTable(props) {
   useEffect(() => {
     const doSort = (e, props) => {
       data.states.sort((StateData1, StateData2) => {
-        const sortColumn = sortData.sortColumn;
-        let value1 = StateData1.total[sortColumn];
-        let value2 = StateData2.total[sortColumn];
-  
+        const sortColumn = resourcesMeta.find(
+          (resource) => resource.name === sortData.sortColumn
+        );
+        let value1 = StateData1.timeline[date][sortColumn];
+        let value2 = StateData2.timeline[date][sortColumn];
+
         if (sortColumn !== 'name') {
-          value1 = parseInt(StateData1.total[sortColumn]);
-          value2 = parseInt(StateData2.total[sortColumn]);
+          value1 = parseInt(StateData1.timeline[date][sortColumn]);
+          value2 = parseInt(StateData2.timeline[date][sortColumn]);
         }
-  
+
         if (sortData.isAscending) {
           return value1 > value2
             ? 1
@@ -55,7 +57,7 @@ function ResourcesTable(props) {
       );
       doSort();
     }
-  }, [data, sortData.isAscending, sortData.sortColumn]);
+  }, [data, resourcesMeta, sortData.isAscending, sortData.sortColumn]);
 
   const handleSort = (e, props) => {
     const currentsortColumn = e.currentTarget
@@ -181,7 +183,9 @@ function ResourcesTable(props) {
                 <div
                   style={{
                     display:
-                      sortData.sortColumn === 'ventilators' ? 'initial' : 'none',
+                      sortData.sortColumn === 'ventilators'
+                        ? 'initial'
+                        : 'none',
                   }}
                 >
                   {sortData.isAscending ? (
@@ -248,8 +252,9 @@ function ResourcesTable(props) {
         </thead>
 
         <tbody>
-          {data.states && data.states.map((state, index) => {
-            // if (state.confirmed > 0) {
+          {data.states &&
+            data.states.map((state, index) => {
+              // if (state.confirmed > 0) {
               return (
                 <ResourcesRow
                   key={index}
@@ -260,10 +265,11 @@ function ResourcesTable(props) {
                   onHighlightState={props.onHighlightState}
                   onHighlightDistrict={props.onHighlightDistrict}
                   handleReveal={handleReveal}
+                  date={date}
                 />
               );
-            // }
-          })}
+              // }
+            })}
         </tbody>
 
         {/* <tbody>

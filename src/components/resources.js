@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
-import {formatDistance} from 'date-fns';
+import {formatDistance, format} from 'date-fns';
 import {formatDate, formatDateAbsolute} from '../utils/common-functions';
 
 import ResourcesTable from './res_table';
@@ -14,30 +14,40 @@ const resources = [
     title: 'Beds',
     className: 'is-green',
     color: 'interpolateGreens',
+    capacityIndex: 0,
+    utilizationIndex: 5,
   },
   {
     name: 'icu_beds',
     title: 'ICU Beds',
     className: 'is-orange',
     color: 'interpolateOranges',
+    capacityIndex: 1,
+    utilizationIndex: 6,
   },
   {
     name: 'ventilators',
     title: 'Ventilators',
     className: 'is-cherry',
     color: 'interpolateReds',
+    capacityIndex: 2,
+    utilizationIndex: 7,
   },
   {
     name: 'doctors',
     title: 'Doctors',
     className: 'is-blue',
     color: 'interpolateBlues',
+    capacityIndex: 3,
+    utilizationIndex: 8,
   },
   {
     name: 'nurses',
     title: 'Nurses',
     className: 'is-purple',
     color: 'interpolatePurples',
+    capacityIndex: 4,
+    utilizationIndex: 9,
   },
 ];
 
@@ -51,6 +61,7 @@ function Resources(props) {
   const [timeseriesMode, setTimeseriesMode] = useState(false);
   const [timeseriesLogMode, setTimeseriesLogMode] = useState(false);
   const [regionHighlighted, setRegionHighlighted] = useState(undefined);
+  const date = format(new Date(), 'yyyy-MM-dd');
 
   useEffect(() => {
     if (fetched === false) {
@@ -66,7 +77,7 @@ function Resources(props) {
           'https://demo6934508.mockable.io/med_resources_timeline.json'
         ),
       ]);
-      setResourcesData(response.data);
+      setResourcesData(responseTimeline.data);
       setLastUpdated(response.data.last_updated_time);
       setFetched(true);
       const timelineUpdated = [];
@@ -134,11 +145,17 @@ function Resources(props) {
             </div>
           </div>
 
-          <ResourcesLevel data={resourcesData} resources={resources} />
+          <ResourcesLevel
+            data={resourcesData}
+            resourcesMeta={resources}
+            date={date}
+          />
           <ResourcesTable
             data={resourcesData}
             onHighlightState={onHighlightState}
             onHighlightDistrict={onHighlightDistrict}
+            resourcesMeta={resources}
+            date={date}
           />
         </div>
 
@@ -148,7 +165,8 @@ function Resources(props) {
               <ResourcesMap
                 data={resourcesData}
                 regionHighlighted={regionHighlighted}
-                resources={resources}
+                resourcesMeta={resources}
+                currentDate={date}
               />
 
               <div

@@ -1,7 +1,5 @@
 import React, {useState, useEffect, useCallback} from 'react';
 import * as Icon from 'react-feather';
-import {formatDate, formatDateAbsolute} from '../utils/common-functions';
-import {formatDistance} from 'date-fns';
 import {Link} from 'react-router-dom';
 
 function ResourcesRow(props) {
@@ -17,6 +15,7 @@ function ResourcesRow(props) {
       ? localStorage.getItem('resDistrict.isAscending') === 'true'
       : false,
   });
+  const [date, setDate] = useState(props.date);
 
   useEffect(() => {
     setState(props.state);
@@ -30,28 +29,26 @@ function ResourcesRow(props) {
     (aDistricts) => {
       if (aDistricts) {
         const sorted = aDistricts.sort((district1, district2) => {
-            const sortColumn = sortData.sortColumn;
-            const value1 =
-              sortColumn === 'name'
-                ? district1.name
-                : parseInt(district1.total.beds);
-            const value2 =
-              sortColumn === 'name'
-                ? district2.name
-                : parseInt(district2.total.beds);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
-            const comparisonValue =
-              value1 > value2
-                ? 1
-                : value1 === value2 && district1.name > district2.name
-                ? 1
-                : -1;
-            return sortData.isAscending
-              ? comparisonValue
-              : comparisonValue * -1;
-          });
-          // .forEach((key) => {
-          //   sorted[key] = aDistricts[key];
-          // });
+          const sortColumn = sortData.sortColumn;
+          const value1 =
+            sortColumn === 'name'
+              ? district1.name
+              : parseInt(district1.timeline[date][0]);
+          const value2 =
+            sortColumn === 'name'
+              ? district2.name
+              : parseInt(district2.timeline[date][0]);
+          const comparisonValue =
+            value1 > value2
+              ? 1
+              : value1 === value2 && district1.name > district2.name
+              ? 1
+              : -1;
+          return sortData.isAscending ? comparisonValue : comparisonValue * -1;
+        });
+        // .forEach((key) => {
+        //   sorted[key] = aDistricts[key];
+        // });
         setSortedDistricts(sorted);
       }
     },
@@ -112,21 +109,29 @@ function ResourcesRow(props) {
             {state.deltaconfirmed > 0 ? `${state.deltaconfirmed}` : ''}
           </span> */}
           <span className="table__count-text">
-            {parseInt(state.total.beds) === 0 ? '-' : state.total.beds}
+            {parseInt(state.timeline[date][0]) === 0
+              ? '-'
+              : state.timeline[date][0]}
           </span>
         </td>
         <td
-          style={{color: parseInt(state.total.icu_beds) === 0 ? '#B5B5B5' : 'inherit'}}
+          style={{
+            color:
+              parseInt(state.timeline[date][1]) === 0 ? '#B5B5B5' : 'inherit',
+          }}
         >
           {/* <span className="deltas" style={{color: '#007bff'}}>
             {!state.delta.active==0 && <Icon.ArrowUp/>}
             {state.delta.active>0 ? `${state.delta.active}` : ''}
           </span>*/}
-          {parseInt(state.total.icu_beds) === 0 ? '-' : state.total.icu_beds}
+          {parseInt(state.timeline[date][1]) === 0
+            ? '-'
+            : state.timeline[date][1]}
         </td>
         <td
           style={{
-            color: parseInt(state.total.ventilators) === 0 ? '#B5B5B5' : 'inherit',
+            color:
+              parseInt(state.timeline[date][2]) === 0 ? '#B5B5B5' : 'inherit',
           }}
         >
           {/* <span className="deltas" style={{color: '#28a745'}}>
@@ -134,29 +139,41 @@ function ResourcesRow(props) {
             {state.deltarecovered > 0 ? `${state.deltarecovered}` : ''}
           </span> */}
           <span className="table__count-text">
-            {parseInt(state.total.ventilators) === 0 ? '-' : state.total.ventilators}
+            {parseInt(state.timeline[date][2]) === 0
+              ? '-'
+              : state.timeline[date][2]}
           </span>
         </td>
         <td
-          style={{color: parseInt(state.total.doctors) === 0 ? '#B5B5B5' : 'inherit'}}
+          style={{
+            color:
+              parseInt(state.timeline[date][3]) === 0 ? '#B5B5B5' : 'inherit',
+          }}
         >
           {/* <span className="deltas" style={{color: '#6c757d'}}>
             {state.deltadeaths > 0 && <Icon.ArrowUp />}
             {state.deltadeaths > 0 ? `${state.deltadeaths}` : ''}
           </span> */}
           <span className="table__count-text">
-            {parseInt(state.total.doctors) === 0 ? '-' : state.total.doctors}
+            {parseInt(state.timeline[date][3]) === 0
+              ? '-'
+              : state.timeline[date][3]}
           </span>
         </td>
         <td
-          style={{color: parseInt(state.total.nurses) === 0 ? '#B5B5B5' : 'inherit'}}
+          style={{
+            color:
+              parseInt(state.timeline[date][4]) === 0 ? '#B5B5B5' : 'inherit',
+          }}
         >
           {/* <span className="deltas" style={{color: '#6c757d'}}>
             {state.deltadeaths > 0 && <Icon.ArrowUp />}
             {state.deltadeaths > 0 ? `${state.deltadeaths}` : ''}
           </span> */}
           <span className="table__count-text">
-            {parseInt(state.total.nurses) === 0 ? '-' : state.total.nurses}
+            {parseInt(state.timeline[date][4]) === 0
+              ? '-'
+              : state.timeline[date][4]}
           </span>
         </td>
       </tr>
@@ -169,7 +186,8 @@ function ResourcesRow(props) {
           <div className="last-update">
             <h6>Last Updated&nbsp;</h6>
             <h6
-              title={''
+              title={
+                ''
                 // isNaN(Date.parse(formatDate(props.state.lastupdatedtime)))
                 //   ? ''
                 //   : formatDateAbsolute(props.state.lastupdatedtime)
@@ -221,8 +239,7 @@ function ResourcesRow(props) {
             </abbr>
             <div
               style={{
-                display:
-                  sortData.sortColumn === 'beds' ? 'initial' : 'none',
+                display: sortData.sortColumn === 'beds' ? 'initial' : 'none',
               }}
             >
               {sortData.isAscending ? (
@@ -299,8 +316,7 @@ function ResourcesRow(props) {
             </abbr>
             <div
               style={{
-                display:
-                  sortData.sortColumn === 'doctors' ? 'initial' : 'none',
+                display: sortData.sortColumn === 'doctors' ? 'initial' : 'none',
               }}
             >
               {sortData.isAscending ? (
@@ -325,8 +341,7 @@ function ResourcesRow(props) {
             </abbr>
             <div
               style={{
-                display:
-                  sortData.sortColumn === 'nurses' ? 'initial' : 'none',
+                display: sortData.sortColumn === 'nurses' ? 'initial' : 'none',
               }}
             >
               {sortData.isAscending ? (
@@ -362,27 +377,27 @@ function ResourcesRow(props) {
                   <td style={{fontWeight: 600}}>{district.name}</td>
                   <td>
                     <span className="table__count-text">
-                      {district.total.beds}
+                      {district.timeline[date][0]}
                     </span>
                   </td>
                   <td>
                     <span className="table__count-text">
-                      {district.total.icu_beds}
+                      {district.timeline[date][1]}
                     </span>
                   </td>
                   <td>
                     <span className="table__count-text">
-                      {district.total.ventilators}
+                      {district.timeline[date][2]}
                     </span>
                   </td>
                   <td>
                     <span className="table__count-text">
-                      {district.total.doctors}
+                      {district.timeline[date][3]}
                     </span>
                   </td>
                   <td>
                     <span className="table__count-text">
-                      {district.total.nurses}
+                      {district.timeline[date][4]}
                     </span>
                   </td>
                 </tr>

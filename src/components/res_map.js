@@ -211,11 +211,12 @@ const mapMeta = {
   },
 };
 
-export default function ({data, regionHighlighted, resources}) {
+export default function ({data, regionHighlighted, resourcesMeta, currentDate}) {
   const [selectedRegion, setSelectedRegion] = useState({});
   const [currentHoveredRegion, setCurrentHoveredRegion] = useState({});
   const [currentMap, setCurrentMap] = useState(mapMeta.India);
-  const [currentResource, setCurrentResource] = useState(resources[0]);
+  const [currentResource, setCurrentResource] = useState(resourcesMeta[0]);
+  const [date, setDate] = useState(currentDate);
 
   useEffect(() => {
     const region = data.states[0];
@@ -245,7 +246,7 @@ export default function ({data, regionHighlighted, resources}) {
     }
 
     currentMapData = _stats.reduce((acc, state) => {
-      const total = parseInt(state.total[currentResource.name]);
+      const total = parseInt(state.timeline[date][currentResource.capacityIndex]);
 
       statistic.total += total;
       statistic.maxResource =
@@ -363,7 +364,7 @@ export default function ({data, regionHighlighted, resources}) {
           const topDistrict = stateObj.districts
             .filter((state) => state.name !== 'Unknown')
             .sort((a, b) => {
-              return a.total.beds - b.total.beds;
+              return a.timeline[date][currentResource.capacityIndex] - b.timeline[date][currentResource.capacityIndex];
             })[0];
           setHoveredRegion(topDistrict, newMap);
         }
@@ -390,7 +391,7 @@ export default function ({data, regionHighlighted, resources}) {
       </div>
 
       <div className="map-stats">
-        {resources.map((resource, index) => {
+        {resourcesMeta.map((resource, index) => {
           const className = 'stats fadeInUp ' + resource.className;
           return (
             <div
@@ -402,8 +403,8 @@ export default function ({data, regionHighlighted, resources}) {
               <h5>{resource.title}</h5>
               <div className="stats-bottom">
                 <h1>
-                  {(currentHoveredRegion.total &&
-                    formatNumber(currentHoveredRegion.total[resource.name])) ||
+                  {(currentHoveredRegion.timeline &&
+                    formatNumber(currentHoveredRegion.timeline[date][resource.capacityIndex])) ||
                     '-'}
                 </h1>
                 <h6>{}</h6>

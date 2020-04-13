@@ -3,8 +3,9 @@ import {formatNumber} from '../utils/common-functions';
 
 function ResourcesLevel(props) {
   const [data, setData] = useState(props.data);
-  const [resourcesMeta, setResourcesMeta] = useState(props.resources);
+  const [resourcesMeta, setResourcesMeta] = useState(props.resourcesMeta);
   const [total, setTotal] = useState({});
+  const [date, setDate] = useState(props.date);
 
   useEffect(() => {
     setData(props.data);
@@ -12,7 +13,7 @@ function ResourcesLevel(props) {
 
   useEffect(() => {
     const parseData = () => {
-      setTotal(data.total)
+      setTotal(data.timeline[date]);
     };
     if (data.last_updated_time) {
       parseData();
@@ -30,7 +31,7 @@ function ResourcesLevel(props) {
             style={{animationDelay: '1s'}}
           >
             <h5 className='heading'>{resource.title}</h5>
-            <h1 className="title">{formatNumber(total[resource.name])} </h1>
+            <h1 className="title">{formatNumber(total[resource.capacityIndex])} </h1>
           </div>
         );
       })}
