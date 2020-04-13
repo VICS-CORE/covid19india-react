@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {formatNumber} from '../utils/common-functions';
+import {featureFlags} from '../conf/settings';
 
 function ResourcesLevel(props) {
   const [data, setData] = useState(props.data);
@@ -24,6 +25,8 @@ function ResourcesLevel(props) {
     <div className="Level">
       {resourcesMeta.map((resource, index) => {
         const className = 'level-item fadeInUp ' + resource.className;
+        const utilization = total[resource.utilizationIndex];
+        const capacity = total[resource.capacityIndex];
         return (
           <div
             key={resource.name}
@@ -31,7 +34,13 @@ function ResourcesLevel(props) {
             style={{animationDelay: '1s'}}
           >
             <h5 className='heading'>{resource.title}</h5>
-            <h1 className="title">{formatNumber(total[resource.capacityIndex])} </h1>
+            {featureFlags.showUtilization && utilization &&
+              <span>
+                <h1 className='title'>{formatNumber(capacity - utilization)}</h1>
+                <h5>[ {formatNumber(capacity)} ]</h5>
+              </span>
+            }
+            {!featureFlags.showUtilization && <h1 className='title'>{formatNumber(capacity)}</h1> }
           </div>
         );
       })}

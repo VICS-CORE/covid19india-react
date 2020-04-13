@@ -72,14 +72,13 @@ function Resources(props) {
 
   const getResourcesData = async () => {
     try {
-      const [response, responseTimeline] = await Promise.all([
-        axios.get('https://demo6934508.mockable.io/med_resources.json'),
+      const [responseTimeline] = await Promise.all([
         axios.get(
           'https://demo6934508.mockable.io/med_resources_timeline.json'
         ),
       ]);
       setResourcesData(responseTimeline.data);
-      setLastUpdated(response.data.last_updated_time);
+      setLastUpdated(responseTimeline.data.last_updated_time);
       setFetched(true);
       const timelineUpdated = [];
       Object.keys(responseTimeline.data.timeline).map(function (key, index) {
@@ -122,7 +121,7 @@ function Resources(props) {
           <div className="header fadeInUp" style={{animationDelay: '1s'}}>
             <div className="header-mid">
               <div className="titles">
-                <h1>Medical Resources</h1>
+                <h1>Available Medical Resources</h1>
                 <h6 style={{fontWeight: 600}}>
                   Proposed addition to covid tracker
                 </h6>
