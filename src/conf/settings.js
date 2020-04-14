@@ -1,3 +1,3 @@
 export const featureFlags = {
-  showUtilization: false
+  showUtilization: true,
 };
