@@ -63,6 +63,7 @@ function Resources(props) {
   const [regionHighlighted, setRegionHighlighted] = useState(undefined);
   const date = format(new Date(), 'yyyy-MM-dd');
 
+
   useEffect(() => {
     if (fetched === false) {
       getResourcesData();
