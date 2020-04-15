@@ -426,7 +426,7 @@ h6 {
             position: relative;
             flex-direction: row;
             height: 0.9rem;
-            align-items: center;
+            align-items: center;       
 
             abbr {
               text-align: right;
@@ -998,6 +998,7 @@ table {
         flex-direction: row;
         height: 0.9rem;
         align-items: center;
+        width: max-content;
 
         abbr {
           text-align: right;
@@ -1049,7 +1050,7 @@ table {
       text-align: right;
       .deltas {
         display: inline-block;
-		    font-size: 11px !important;
+		    font-size: 10px !important;
 
         svg {
           width: 9px;

@@ -1,6 +1,7 @@
 import React, {useState, useEffect, useCallback} from 'react';
 import * as Icon from 'react-feather';
-import {Link} from 'react-router-dom';
+import {RESOURCES_META} from '../constants';
+import {formatNumber} from '../utils/common-functions';
 
 function ResourcesRow(props) {
   const [state, setState] = useState(props.state);
@@ -75,11 +76,10 @@ function ResourcesRow(props) {
   return (
     <React.Fragment>
       <tr
-        className={props.total ? 'state is-total' : 'state'}
         onMouseEnter={() => props.onHighlightState?.(state, props.index)}
         onMouseLeave={() => props.onHighlightState?.()}
         touchstart={() => props.onHighlightState?.(state, props.index)}
-        onClick={!props.total ? handleReveal : null}
+        onClick={ handleReveal }
         style={{background: props.index % 2 === 0 ? '#f8f9fa' : ''}}
       >
         <td style={{fontWeight: 600}}>
@@ -88,7 +88,6 @@ function ResourcesRow(props) {
               className={`dropdown ${
                 props.reveal ? 'rotateRightDown' : 'rotateDownRight'
               }`}
-              style={{display: !props.total ? '' : 'none'}}
               onClick={() => {
                 handleReveal();
               }}
@@ -96,91 +95,27 @@ function ResourcesRow(props) {
               <Icon.ChevronDown />
             </span>
             {state.name}
-            {state.name === 'West Bengal' && (
-              <Link to="/faq">
-                <Icon.HelpCircle className="height-22" />
-              </Link>
-            )}
           </div>
         </td>
-        <td>
-          {/* <span className="deltas" style={{color: '#ff073a'}}>
-            {state.deltaconfirmed > 0 && <Icon.ArrowUp />}
-            {state.deltaconfirmed > 0 ? `${state.deltaconfirmed}` : ''}
-          </span> */}
-          <span className="table__count-text">
-            {parseInt(state.timeline[date][0]) === 0
-              ? '-'
-              : state.timeline[date][0]}
-          </span>
-        </td>
-        <td
-          style={{
-            color:
-              parseInt(state.timeline[date][1]) === 0 ? '#B5B5B5' : 'inherit',
-          }}
-        >
-          {/* <span className="deltas" style={{color: '#007bff'}}>
-            {!state.delta.active==0 && <Icon.ArrowUp/>}
-            {state.delta.active>0 ? `${state.delta.active}` : ''}
-          </span>*/}
-          {parseInt(state.timeline[date][1]) === 0
-            ? '-'
-            : state.timeline[date][1]}
-        </td>
-        <td
-          style={{
-            color:
-              parseInt(state.timeline[date][2]) === 0 ? '#B5B5B5' : 'inherit',
-          }}
-        >
-          {/* <span className="deltas" style={{color: '#28a745'}}>
-            {state.deltarecovered > 0 && <Icon.ArrowUp />}
-            {state.deltarecovered > 0 ? `${state.deltarecovered}` : ''}
-          </span> */}
-          <span className="table__count-text">
-            {parseInt(state.timeline[date][2]) === 0
-              ? '-'
-              : state.timeline[date][2]}
-          </span>
-        </td>
-        <td
-          style={{
-            color:
-              parseInt(state.timeline[date][3]) === 0 ? '#B5B5B5' : 'inherit',
-          }}
-        >
-          {/* <span className="deltas" style={{color: '#6c757d'}}>
-            {state.deltadeaths > 0 && <Icon.ArrowUp />}
-            {state.deltadeaths > 0 ? `${state.deltadeaths}` : ''}
-          </span> */}
-          <span className="table__count-text">
-            {parseInt(state.timeline[date][3]) === 0
-              ? '-'
-              : state.timeline[date][3]}
-          </span>
-        </td>
-        <td
-          style={{
-            color:
-              parseInt(state.timeline[date][4]) === 0 ? '#B5B5B5' : 'inherit',
-          }}
-        >
-          {/* <span className="deltas" style={{color: '#6c757d'}}>
-            {state.deltadeaths > 0 && <Icon.ArrowUp />}
-            {state.deltadeaths > 0 ? `${state.deltadeaths}` : ''}
-          </span> */}
-          <span className="table__count-text">
-            {parseInt(state.timeline[date][4]) === 0
-              ? '-'
-              : state.timeline[date][4]}
-          </span>
-        </td>
+        {RESOURCES_META.map((resource, index) => {
+          const capacity = state.timeline[date][resource.capacityIndex]
+          const utilization = state.timeline[date][resource.utilizationIndex]
+          return (
+            <td key={resource.name}>
+              <span className="table__count-text">
+                {formatNumber(capacity - utilization)}
+              </span>
+              <span className="deltas">
+                &nbsp; [ {formatNumber(capacity)} ]
+              </span>
+            </td>
+          )
+        })}
       </tr>
 
       <tr
         className={'state-last-update'}
-        style={{display: props.reveal && !props.total ? '' : 'none'}}
+        style={{display: props.reveal ? '' : 'none'}}
       >
         <td colSpan={2}>
           <div className="last-update">
@@ -206,7 +141,7 @@ function ResourcesRow(props) {
 
       <tr
         className={`district-heading`}
-        style={{display: props.reveal && !props.total ? '' : 'none'}}
+        style={{display: props.reveal ? '' : 'none'}}
       >
         <td onClick={(e) => handleSort('district')}>
           <div className="heading-content">
@@ -225,133 +160,24 @@ function ResourcesRow(props) {
             </div>
           </div>
         </td>
-        <td onClick={(e) => handleSort('beds')}>
-          <div className="heading-content">
-            <abbr
-              className={`${window.innerWidth <= 769 ? 'is-cherry' : ''}`}
-              title="Beds"
-            >
-              {window.innerWidth <= 769
-                ? window.innerWidth <= 375
-                  ? 'B'
-                  : 'Beds'
-                : 'Beds'}
-            </abbr>
-            <div
-              style={{
-                display: sortData.sortColumn === 'beds' ? 'initial' : 'none',
-              }}
-            >
-              {sortData.isAscending ? (
-                <div className="arrow-up" />
-              ) : (
-                <div className="arrow-down" />
-              )}
-            </div>
-          </div>
-        </td>
-        <td onClick={(e) => handleSort('icu_beds')}>
-          <div className="heading-content">
-            <abbr
-              className={`${window.innerWidth <= 769 ? 'is-blue' : ''}`}
-              title="ICU Beds"
-            >
-              {window.innerWidth <= 769
-                ? window.innerWidth <= 375
-                  ? 'I'
-                  : 'ICU'
-                : 'ICU Beds'}
-            </abbr>
-            <div
-              style={{
-                display:
-                  sortData.sortColumn === 'icu_beds' ? 'initial' : 'none',
-              }}
-            >
-              {sortData.isAscending ? (
-                <div className="arrow-up" />
-              ) : (
-                <div className="arrow-down" />
-              )}
-            </div>
-          </div>
-        </td>
-        <td onClick={(e) => handleSort('ventilators')}>
-          <div className="heading-content">
-            <abbr
-              className={`${window.innerWidth <= 769 ? 'is-blue' : ''}`}
-              title="Ventilators"
-            >
-              {window.innerWidth <= 769
-                ? window.innerWidth <= 375
-                  ? 'V'
-                  : 'Vents'
-                : 'Ventilators'}
-            </abbr>
-            <div
-              style={{
-                display:
-                  sortData.sortColumn === 'ventilators' ? 'initial' : 'none',
-              }}
-            >
-              {sortData.isAscending ? (
-                <div className="arrow-up" />
-              ) : (
-                <div className="arrow-down" />
-              )}
-            </div>
-          </div>
-        </td>
-        <td onClick={(e) => handleSort('beds')}>
-          <div className="heading-content">
-            <abbr
-              className={`${window.innerWidth <= 769 ? 'is-green' : ''}`}
-              title="Doctors"
-            >
-              {window.innerWidth <= 769
-                ? window.innerWidth <= 375
-                  ? 'D'
-                  : 'Docs'
-                : 'Doctors'}
-            </abbr>
-            <div
-              style={{
-                display: sortData.sortColumn === 'doctors' ? 'initial' : 'none',
-              }}
-            >
-              {sortData.isAscending ? (
-                <div className="arrow-up" />
-              ) : (
-                <div className="arrow-down" />
-              )}
-            </div>
-          </div>
-        </td>
-        <td onClick={(e) => handleSort('nurses')}>
-          <div className="heading-content">
-            <abbr
-              className={`${window.innerWidth <= 769 ? 'is-green' : ''}`}
-              title="Beds"
-            >
-              {window.innerWidth <= 769
-                ? window.innerWidth <= 375
-                  ? 'N'
-                  : 'Nurs'
-                : 'Nurses'}
-            </abbr>
-            <div
-              style={{
-                display: sortData.sortColumn === 'nurses' ? 'initial' : 'none',
-              }}
-            >
-              {sortData.isAscending ? (
-                <div className="arrow-up" />
-              ) : (
-                <div className="arrow-down" />
-              )}
-            </div>
-          </div>
-        </td>
+        {RESOURCES_META.map((resource, index) => {
+          return (
+            <td key={resource.name} onClick={(e) => handleSort(resource.name)}>
+              <div className="heading-content">
+                <abbr className={`${window.innerWidth <= 769 ? resource.className : ''}`} title={resource.title}>
+                  {window.innerWidth <= 769
+                    ? window.innerWidth <= 375
+                      ? resource.title.charAt(0)
+                      : resource.title
+                    : resource.title}
+                </abbr>
+                <div style={{display: sortData.sortColumn === resource.name ? 'initial' : 'none'}}>
+                  {sortData.isAscending ? <div className="arrow-up" /> : <div className="arrow-down" />}
+                </div>
+              </div>
+            </td>
+          )
+        })}
       </tr>
       {sortedDistricts &&
         sortedDistricts
@@ -363,7 +189,7 @@ function ResourcesRow(props) {
                   key={index}
                   className={`district`}
                   style={{
-                    display: props.reveal && !props.total ? '' : 'none',
+                    display: props.reveal ? '' : 'none',
                     background: index % 2 === 0 ? '#f8f9fa' : '',
                   }}
                   onMouseEnter={() =>
@@ -375,31 +201,20 @@ function ResourcesRow(props) {
                   }
                 >
                   <td style={{fontWeight: 600}}>{district.name}</td>
-                  <td>
-                    <span className="table__count-text">
-                      {district.timeline[date][0]}
-                    </span>
-                  </td>
-                  <td>
-                    <span className="table__count-text">
-                      {district.timeline[date][1]}
-                    </span>
-                  </td>
-                  <td>
-                    <span className="table__count-text">
-                      {district.timeline[date][2]}
-                    </span>
-                  </td>
-                  <td>
-                    <span className="table__count-text">
-                      {district.timeline[date][3]}
-                    </span>
-                  </td>
-                  <td>
-                    <span className="table__count-text">
-                      {district.timeline[date][4]}
-                    </span>
-                  </td>
+                  {RESOURCES_META.map((resource, index) => {
+                    const capacity = district.timeline[date][resource.capacityIndex]
+                    const utilization = district.timeline[date][resource.utilizationIndex]
+                    return (
+                      <td key={resource.name}>
+                        <span className="table__count-text">
+                          {formatNumber(capacity - utilization)}
+                        </span>
+                        <span className="deltas">
+                          &nbsp; [ {formatNumber(capacity)} ]
+                        </span>
+                      </td>
+                    )
+                  })}
                 </tr>
               );
             }
@@ -409,28 +224,17 @@ function ResourcesRow(props) {
       {sortedDistricts?.Unknown && (
         <tr
           className={`district`}
-          style={{display: props.reveal && !props.total ? '' : 'none'}}
+          style={{display: props.reveal ? '' : 'none'}}
         >
           <td style={{fontWeight: 600}}>Unknown</td>
           <td>
-            {/* <span className="deltas" style={{color: '#ff073a'}}>
-              {sortedDistricts['Unknown'].delta.confirmed > 0 && (
-                <Icon.ArrowUp />
-              )}
-              {sortedDistricts['Unknown'].delta.confirmed > 0
-                ? `${sortedDistricts['Unknown'].delta.confirmed}`
-                : ''}
-            </span> */}
-            {/* <span className="table__count-text">
-              {sortedDistricts['Unknown'].confirmed}
-            </span> */}
           </td>
         </tr>
       )}
 
       <tr
         className={`spacer`}
-        style={{display: props.reveal && !props.total ? '' : 'none'}}
+        style={{display: props.reveal ? '' : 'none'}}
       >
         <td></td>
         <td></td>
