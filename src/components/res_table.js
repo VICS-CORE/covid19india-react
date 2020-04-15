@@ -1,10 +1,10 @@
 import React, {useState, useEffect} from 'react';
 import ResourcesRow from './res_row';
+import {RESOURCES_META} from '../constants';
 
 function ResourcesTable(props) {
   const [data, setData] = useState(props.data);
   const [revealedStates, setRevealedStates] = useState({});
-  const [resourcesMeta, setResourceMeta] = useState(props.resourcesMeta);
   const [date, setDate] = useState(props.date);
   const [sortData, setSortData] = useState({
     sortColumn: localStorage.getItem('resState.sortColumn')
@@ -22,7 +22,7 @@ function ResourcesTable(props) {
   useEffect(() => {
     const doSort = (e, props) => {
       data.states.sort((StateData1, StateData2) => {
-        const sortColumn = resourcesMeta.find(
+        const sortColumn = RESOURCES_META.find(
           (resource) => resource.name === sortData.sortColumn
         );
         let value1 = StateData1.timeline[date][sortColumn];
@@ -57,7 +57,7 @@ function ResourcesTable(props) {
       );
       doSort();
     }
-  }, [data, resourcesMeta, sortData.isAscending, sortData.sortColumn]);
+  }, [data, RESOURCES_META, sortData.isAscending, sortData.sortColumn]);
 
   const handleSort = (e, props) => {
     const currentsortColumn = e.currentTarget
@@ -111,150 +111,30 @@ function ResourcesTable(props) {
                 </div>
               </div>
             </th>
-            <th className="sticky" onClick={(e) => handleSort(e, props)}>
-              <div className="heading-content">
-                <abbr
-                  className={`${window.innerWidth <= 769 ? 'is-cherry' : ''}`}
-                  title="Beds"
-                >
-                  {window.innerWidth <= 769
-                    ? window.innerWidth <= 375
-                      ? 'B'
-                      : 'Beds'
-                    : 'Beds'}
-                </abbr>
-                <div
-                  style={{
-                    display:
-                      sortData.sortColumn === 'beds' ? 'initial' : 'none',
-                  }}
-                >
-                  {sortData.isAscending ? (
-                    <div className="arrow-up" />
-                  ) : (
-                    <div className="arrow-down" />
-                  )}
-                </div>
-              </div>
-            </th>
-            <th className="sticky" onClick={(e) => handleSort(e, props)}>
-              <div className="heading-content">
-                <abbr
-                  className={`${window.innerWidth <= 769 ? 'is-blue' : ''}`}
-                  title="ICU Beds"
-                >
-                  {window.innerWidth <= 769
-                    ? window.innerWidth <= 375
-                      ? 'I'
-                      : 'ICU'
-                    : 'ICU Beds'}
-                </abbr>
-                <div
-                  style={{
-                    display:
-                      sortData.sortColumn === 'icu_beds' ? 'initial' : 'none',
-                  }}
-                >
-                  {sortData.isAscending ? (
-                    <div className="arrow-up" />
-                  ) : (
-                    <div className="arrow-down" />
-                  )}
-                </div>
-              </div>
-            </th>
-            <th className="sticky" onClick={(e) => handleSort(e, props)}>
-              <div className="heading-content">
-                <abbr
-                  className={`${window.innerWidth <= 769 ? 'is-green' : ''}`}
-                  title="Ventilators"
-                >
-                  {window.innerWidth <= 769
-                    ? window.innerWidth <= 375
-                      ? 'V'
-                      : 'Vents'
-                    : 'Ventilators'}
-                </abbr>
-                <div
-                  className={
-                    sortData.sortColumn === 'ventilators' ? 'sort-black' : ''
-                  }
-                ></div>
-                <div
-                  style={{
-                    display:
-                      sortData.sortColumn === 'ventilators'
-                        ? 'initial'
-                        : 'none',
-                  }}
-                >
-                  {sortData.isAscending ? (
-                    <div className="arrow-up" />
-                  ) : (
-                    <div className="arrow-down" />
-                  )}
-                </div>
-              </div>
-            </th>
-            <th className="sticky" onClick={(e) => handleSort(e, props)}>
-              <div className="heading-content">
-                <abbr
-                  className={`${window.innerWidth <= 769 ? 'is-gray' : ''}`}
-                  title="Doctors"
-                >
-                  {window.innerWidth <= 769
-                    ? window.innerWidth <= 375
-                      ? 'D'
-                      : 'Docs'
-                    : 'Doctors'}
-                </abbr>
-                <div
-                  style={{
-                    display:
-                      sortData.sortColumn === 'doctors' ? 'initial' : 'none',
-                  }}
-                >
-                  {sortData.isAscending ? (
-                    <div className="arrow-up" />
-                  ) : (
-                    <div className="arrow-down" />
-                  )}
-                </div>
-              </div>
-            </th>
-            <th className="sticky" onClick={(e) => handleSort(e, props)}>
-              <div className="heading-content">
-                <abbr
-                  className={`${window.innerWidth <= 769 ? 'is-gray' : ''}`}
-                  title="Nurses"
-                >
-                  {window.innerWidth <= 769
-                    ? window.innerWidth <= 375
-                      ? 'N'
-                      : 'Nrs'
-                    : 'Nurses'}
-                </abbr>
-                <div
-                  style={{
-                    display:
-                      sortData.sortColumn === 'nurses' ? 'initial' : 'none',
-                  }}
-                >
-                  {sortData.isAscending ? (
-                    <div className="arrow-up" />
-                  ) : (
-                    <div className="arrow-down" />
-                  )}
-                </div>
-              </div>
-            </th>
+            {RESOURCES_META.map((resource, index) => {
+              return (
+                <th key={resource.name} className="sticky" onClick={(e) => handleSort(e, props)}>
+                  <div className="heading-content">
+                    <abbr className={`${window.innerWidth <= 769 ? resource.className : ''}`} title={resource.title}>
+                      {window.innerWidth <= 769
+                        ? window.innerWidth <= 375
+                          ? resource.title.charAt(0)
+                          : resource.title
+                        : resource.title}
+                    </abbr>
+                    <div style={{display: sortData.sortColumn === resource.name ? 'initial' : 'none'}}>
+                      {sortData.isAscending ? <div className="arrow-up" /> : <div className="arrow-down" />}
+                    </div>
+                  </div>
+                </th>
+              )
+            })}
           </tr>
         </thead>
 
         <tbody>
           {data.states &&
             data.states.map((state, index) => {
-              // if (state.confirmed > 0) {
               return (
                 <ResourcesRow
                   key={index}
@@ -268,15 +148,8 @@ function ResourcesTable(props) {
                   date={date}
                 />
               );
-              // }
             })}
         </tbody>
-
-        {/* <tbody>
-          {data.states.length > 1  && (
-            <ResourcesRow key={0} state={data.states.total} total={true} />
-          )}
-        </tbody> */}
       </table>
     </React.Fragment>
   );
