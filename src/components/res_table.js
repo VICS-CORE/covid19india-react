@@ -140,7 +140,6 @@ function ResourcesTable(props) {
                   key={index}
                   index={index}
                   state={state}
-                  total={false}
                   reveal={revealedStates[state.name]}
                   onHighlightState={props.onHighlightState}
                   onHighlightDistrict={props.onHighlightDistrict}
