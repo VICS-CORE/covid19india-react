@@ -129,7 +129,7 @@ function Resources(props) {
                 className="timeseries-header fadeInUp"
                 style={{animationDelay: '2.5s'}}
               >
-                <h1>Spread Trends</h1>
+                <h1>Resource Trends</h1>
                 <div className="tabs">
                   <div
                     className={`tab ${graphOption === 1 ? 'focused' : ''}`}

@@ -393,6 +393,8 @@ export default function ({data, regionHighlighted, resourcesMeta, currentDate}) 
       <div className="map-stats">
         {resourcesMeta.map((resource, index) => {
           const className = 'stats fadeInUp ' + resource.className;
+          const capacity = currentHoveredRegion.timeline && currentHoveredRegion.timeline[date][resource.capacityIndex];
+          const utilization = currentHoveredRegion.timeline && currentHoveredRegion.timeline[date][resource.utilizationIndex];
           return (
             <div
               key={resource.name}
@@ -402,12 +404,8 @@ export default function ({data, regionHighlighted, resourcesMeta, currentDate}) 
             >
               <h5>{resource.title}</h5>
               <div className="stats-bottom">
-                <h1>
-                  {(currentHoveredRegion.timeline &&
-                    formatNumber(currentHoveredRegion.timeline[date][resource.capacityIndex])) ||
-                    '-'}
-                </h1>
-                <h6>{}</h6>
+                <h1>{ formatNumber(capacity - utilization) }</h1>
+                <h6>&nbsp;[{formatNumber(capacity)}]</h6>
               </div>
             </div>
           );
