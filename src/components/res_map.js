@@ -230,7 +230,7 @@ export default function ({data, regionHighlighted, resourcesMeta, currentDate}) 
   const [statistic, currentMapData] = useMemo(() => {
     const statistic = {
       total: 0,
-      maxResource: 0,
+      maxResourceUtilization: 0,
     };
     let currentMapData = {};
     let _stats = {};
@@ -246,13 +246,15 @@ export default function ({data, regionHighlighted, resourcesMeta, currentDate}) 
     }
 
     currentMapData = _stats.reduce((acc, state) => {
-      const total = parseInt(state.timeline[date][currentResource.capacityIndex]);
+      const capacity = parseInt(state.timeline[date][currentResource.capacityIndex]) || 1;
+      const utilization = parseInt(state.timeline[date][currentResource.utilizationIndex]);
+      const utilizationRatio = (utilization/capacity)*100;
 
-      statistic.total += total;
-      statistic.maxResource =
-        total > statistic.maxResource ? total : statistic.maxResource;
+      statistic.total += utilizationRatio;
+      statistic.maxResourceUtilization =
+        utilizationRatio > statistic.maxResourceUtilization ? utilizationRatio : statistic.maxResourceUtilization;
 
-      acc[state.name] = total;
+      acc[state.name] = utilizationRatio;
       return acc;
     }, {});
 
@@ -386,7 +388,7 @@ export default function ({data, regionHighlighted, resourcesMeta, currentDate}) 
         <h6>
           {window.innerWidth <= 769 ? 'Tap' : 'Hover'} over a{' '}
           {currentMap.mapType === MAP_TYPES.COUNTRY ? 'state/ut' : 'district'}{' '}
-          for more details
+          to see the availability of resources
         </h6>
       </div>
 
