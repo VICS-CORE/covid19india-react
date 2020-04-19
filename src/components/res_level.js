@@ -34,7 +34,7 @@ function ResourcesLevel(props) {
             style={{animationDelay: '1s'}}
           >
             <h5 className='heading'>{resource.title}</h5>
-            {featureFlags.showUtilization && utilization &&
+            {featureFlags.showUtilization &&
               <span>
                 <h1 className='title'>{formatNumber(capacity - utilization)}</h1>
                 <h5>[ {formatNumber(capacity)} ]</h5>

@@ -76,7 +76,7 @@ function ChoroplethMap({
             n === 0
               ? '#ffffff'
               : d3[currentResource.color](
-                  (maxInterpolation * n) / (statistic.maxResource || 0.001)
+                  (maxInterpolation * n) / (statistic.maxResourceUtilization || 0.001)
                 );
           return color;
         })
@@ -131,7 +131,7 @@ function ChoroplethMap({
       setSelectedRegion,
       mapData,
       currentResource.color,
-      statistic.maxResource,
+      statistic.maxResourceUtilization,
       statistic.total,
       changeMap,
     ]
@@ -152,7 +152,7 @@ function ChoroplethMap({
     const maxInterpolation = 0.8;
     const color = d3
       .scaleSequential(d3[currentResource.color])
-      .domain([0, statistic.maxResource / maxInterpolation || 10]);
+      .domain([0, statistic.maxResourceUtilization / maxInterpolation || 10]);
 
     let cells = null;
     let label = null;
@@ -170,7 +170,7 @@ function ChoroplethMap({
 
     const numCells = 6;
     const delta = Math.floor(
-      (statistic.maxResource < numCells ? numCells : statistic.maxResource) /
+      (statistic.maxResourceUtilization < numCells ? numCells : statistic.maxResourceUtilization) /
         (numCells - 1)
     );
 
@@ -187,7 +187,7 @@ function ChoroplethMap({
       .cells(cells)
       .titleWidth(3)
       .labels(label)
-      .title(currentResource.title)
+      .title(currentResource.title + ' Utilization %')
       .orient('vertical')
       .scale(color);
 
@@ -196,7 +196,7 @@ function ChoroplethMap({
       .call(legendLinear)
       .selectAll('text')
       .style('font-size', '10px');
-  }, [currentResource, statistic.maxResource]);
+  }, [currentResource, statistic.maxResourceUtilization]);
 
   useEffect(() => {
     (async () => {
