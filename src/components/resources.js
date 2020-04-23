@@ -20,7 +20,8 @@ function Resources(props) {
   const [timeseriesLogMode, setTimeseriesLogMode] = useState(false);
   const [regionHighlighted, setRegionHighlighted] = useState(undefined);
   const date = format(new Date(), 'yyyy-MM-dd');
-
+  const [dataURL, setDataURL] = useState('https://demo6934508.mockable.io/med_resources_timeline.json');
+  
   useEffect(() => {
     if (fetched === false) {
       getResourcesData();
@@ -29,9 +30,10 @@ function Resources(props) {
 
   const getResourcesData = async () => {
     try {
+      console.log(dataURL);
       const [responseTimeline] = await Promise.all([
         axios.get(
-          'https://demo6934508.mockable.io/med_resources_timeline.json'
+          dataURL
         ),
       ]);
       setResourcesData(responseTimeline.data);
@@ -62,6 +64,15 @@ function Resources(props) {
     }
   };
 
+  const onClickHeader = () => {
+    if (dataURL == 'https://vics-core.github.io/covid-api/medresources/timeline.json')
+      setDataURL('https://demo6934508.mockable.io/med_resources_timeline.json');
+    else
+      setDataURL('https://vics-core.github.io/covid-api/medresources/timeline.json');
+
+    setFetched(false);
+  };
+
   const onHighlightState = (state, index) => {
     if (!state && !index) setRegionHighlighted(null);
     else setRegionHighlighted({state, index});
@@ -73,7 +84,7 @@ function Resources(props) {
 
   return (
     <React.Fragment>
-      <div className="Home">
+      <div className="Home">  
         <div className="home-left">
           <div className="header fadeInUp" style={{animationDelay: '1s'}}>
             <div className="header-mid">
@@ -129,7 +140,7 @@ function Resources(props) {
                 className="timeseries-header fadeInUp"
                 style={{animationDelay: '2.5s'}}
               >
-                <h1>Resource Trends</h1>
+                <h1 onClick={onClickHeader}>Resource Trends</h1>
                 <div className="tabs">
                   <div
                     className={`tab ${graphOption === 1 ? 'focused' : ''}`}
