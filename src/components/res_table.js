@@ -25,12 +25,12 @@ function ResourcesTable(props) {
         const sortColumn = RESOURCES_META.find(
           (resource) => resource.name === sortData.sortColumn
         );
-        let value1 = StateData1.timeline[date][sortColumn];
-        let value2 = StateData2.timeline[date][sortColumn];
+        let value1 = StateData1.timeline[date][sortColumn.capacityIndex];
+        let value2 = StateData2.timeline[date][sortColumn.capacityIndex];
 
         if (sortColumn !== 'name') {
-          value1 = parseInt(StateData1.timeline[date][sortColumn]);
-          value2 = parseInt(StateData2.timeline[date][sortColumn]);
+          value1 = parseInt(StateData1.timeline[date][sortColumn.capacityIndex]);
+          value2 = parseInt(StateData2.timeline[date][sortColumn.capacityIndex]);
         }
 
         if (sortData.isAscending) {
@@ -115,7 +115,7 @@ function ResourcesTable(props) {
               return (
                 <th key={resource.name} className="sticky" onClick={(e) => handleSort(e, props)}>
                   <div className="heading-content">
-                    <abbr className={`${window.innerWidth <= 769 ? resource.className : ''}`} title={resource.title}>
+                    <abbr className={`${window.innerWidth <= 769 ? resource.className : ''}`} title={resource.name}>
                       {window.innerWidth <= 769
                         ? window.innerWidth <= 375
                           ? resource.title.charAt(0)
