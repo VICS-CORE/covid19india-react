@@ -56,7 +56,7 @@ function ResourcesRow(props) {
     [sortData.isAscending, sortData.sortColumn]
   );
 
-  const handleSort = (column) => {
+  const sort = (column) => {
     const isAscending =
       sortData.sortColumn === column
         ? !sortData.isAscending
@@ -143,7 +143,7 @@ function ResourcesRow(props) {
         className={`district-heading`}
         style={{display: props.reveal ? '' : 'none'}}
       >
-        <td onClick={(e) => handleSort('district')}>
+        <td onClick={(e) => sort('district')}>
           <div className="heading-content">
             <abbr title="District">District</abbr>
             <div
@@ -162,9 +162,9 @@ function ResourcesRow(props) {
         </td>
         {RESOURCES_META.map((resource, index) => {
           return (
-            <td key={resource.name} onClick={(e) => handleSort(resource.name)}>
+            <td key={resource.name} onClick={(e) => sort(resource.name)}>
               <div className="heading-content">
-                <abbr className={`${window.innerWidth <= 769 ? resource.className : ''}`} title={resource.title}>
+                <abbr className={`${window.innerWidth <= 769 ? resource.className : ''}`} title={resource.name}>
                   {window.innerWidth <= 769
                     ? window.innerWidth <= 375
                       ? resource.title.charAt(0)
