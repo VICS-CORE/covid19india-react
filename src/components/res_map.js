@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useMemo, useCallback} from 'react';
 import ChoroplethMap from './choropleth';
-import {MAP_TYPES, MAPS_DIR} from '../constants';
+import {MAP_TYPES, MAP_META} from '../constants';
 import {
   formatDate,
   formatDateAbsolute,
@@ -8,213 +8,10 @@ import {
 } from '../utils/common-functions';
 import {formatDistance} from 'date-fns';
 
-const mapMeta = {
-  India: {
-    name: 'India',
-    geoDataFile: `${MAPS_DIR}/india.json`,
-    mapType: MAP_TYPES.COUNTRY,
-    graphObjectName: 'india',
-  },
-  'Andaman and Nicobar Islands': {
-    name: 'Andaman and Nicobar Islands',
-    geoDataFile: `${MAPS_DIR}/andamannicobarislands.json`,
-    mapType: MAP_TYPES.STATE,
-    graphObjectName: 'andamannicobarislands_district',
-  },
-  'Arunachal Pradesh': {
-    name: 'Arunachal Pradesh',
-    geoDataFile: `${MAPS_DIR}/arunachalpradesh.json`,
-    mapType: MAP_TYPES.STATE,
-    graphObjectName: 'arunachalpradesh_district',
-  },
-  'Andhra Pradesh': {
-    name: 'Andhra Pradesh',
-    geoDataFile: `${MAPS_DIR}/andhrapradesh.json`,
-    mapType: MAP_TYPES.STATE,
-    graphObjectName: 'andhrapradesh_district',
-  },
-
-  Assam: {
-    name: 'Assam',
-    geoDataFile: `${MAPS_DIR}/assam.json`,
-    mapType: MAP_TYPES.STATE,
-    graphObjectName: 'assam_district',
-  },
-  Bihar: {
-    name: 'Bihar',
-    geoDataFile: `${MAPS_DIR}/bihar.json`,
-    mapType: MAP_TYPES.STATE,
-    graphObjectName: 'bihar_district',
-  },
-  Chhattisgarh: {
-    name: 'Chhattisgarh',
-    geoDataFile: `${MAPS_DIR}/chhattisgarh.json`,
-    mapType: MAP_TYPES.STATE,
-    graphObjectName: 'chhattisgarh_district',
-  },
-  Delhi: {
-    name: 'Delhi',
-    geoDataFile: `${MAPS_DIR}/delhi.json`,
-    mapType: MAP_TYPES.STATE,
-    graphObjectName: 'delhi_district',
-  },
-  Karnataka: {
-    name: 'Karnataka',
-    geoDataFile: `${MAPS_DIR}/karnataka.json`,
-    mapType: MAP_TYPES.STATE,
-    graphObjectName: 'karnataka_district',
-  },
-  Kerala: {
-    name: 'Kerala',
-    geoDataFile: `${MAPS_DIR}/kerala.json`,
-    mapType: MAP_TYPES.STATE,
-    graphObjectName: 'kerala_district',
-  },
-  Goa: {
-    name: 'Goa',
-    geoDataFile: `${MAPS_DIR}/goa.json`,
-    mapType: MAP_TYPES.STATE,
-    graphObjectName: 'goa_district',
-  },
-  Gujarat: {
-    name: 'Gujarat',
-    geoDataFile: `${MAPS_DIR}/gujarat.json`,
-    mapType: MAP_TYPES.STATE,
-    graphObjectName: 'gujarat_district',
-  },
-  Haryana: {
-    name: 'Haryana',
-    geoDataFile: `${MAPS_DIR}/haryana.json`,
-    mapType: MAP_TYPES.STATE,
-    graphObjectName: 'haryana_district',
-  },
-  'Himachal Pradesh': {
-    name: 'Himachal Pradesh',
-    geoDataFile: `${MAPS_DIR}/himachalpradesh.json`,
-    mapType: MAP_TYPES.STATE,
-    graphObjectName: 'himachalpradesh_district',
-  },
-  'Jammu and Kashmir': {
-    name: 'Jammu and Kashmir',
-    geoDataFile: `${MAPS_DIR}/jammukashmir.json`,
-    mapType: MAP_TYPES.STATE,
-    graphObjectName: 'jammukashmir_district',
-  },
-  Jharkhand: {
-    name: 'Jharkhand',
-    geoDataFile: `${MAPS_DIR}/jharkhand.json`,
-    mapType: MAP_TYPES.STATE,
-    graphObjectName: 'jharkhand_district',
-  },
-  Ladakh: {
-    name: 'Ladakh',
-    geoDataFile: `${MAPS_DIR}/ladakh.json`,
-    mapType: MAP_TYPES.STATE,
-    graphObjectName: 'ladakh_district',
-  },
-  'Madhya Pradesh': {
-    name: 'Madhya Pradesh',
-    geoDataFile: `${MAPS_DIR}/madhyapradesh.json`,
-    mapType: MAP_TYPES.STATE,
-    graphObjectName: 'madhyapradesh_district',
-  },
-  Maharashtra: {
-    name: 'Maharashtra',
-    geoDataFile: `${MAPS_DIR}/maharashtra.json`,
-    mapType: MAP_TYPES.STATE,
-    graphObjectName: 'maharashtra_district',
-  },
-  Manipur: {
-    name: 'Manipur',
-    geoDataFile: `${MAPS_DIR}/manipur.json`,
-    mapType: MAP_TYPES.STATE,
-    graphObjectName: 'manipur_district',
-  },
-  Meghalaya: {
-    name: 'Meghalaya',
-    geoDataFile: `${MAPS_DIR}/meghalaya.json`,
-    mapType: MAP_TYPES.STATE,
-    graphObjectName: 'meghalaya_district',
-  },
-  Mizoram: {
-    name: 'Mizoram',
-    geoDataFile: `${MAPS_DIR}/mizoram.json`,
-    mapType: MAP_TYPES.STATE,
-    graphObjectName: 'mizoram_district',
-  },
-  Nagaland: {
-    name: 'Nagaland',
-    geoDataFile: `${MAPS_DIR}/nagaland.json`,
-    mapType: MAP_TYPES.STATE,
-    graphObjectName: 'nagaland_district',
-  },
-  Odisha: {
-    name: 'Odisha',
-    geoDataFile: `${MAPS_DIR}/odisha.json`,
-    mapType: MAP_TYPES.STATE,
-    graphObjectName: 'odisha_district',
-  },
-  Punjab: {
-    name: 'Punjab',
-    geoDataFile: `${MAPS_DIR}/punjab.json`,
-    mapType: MAP_TYPES.STATE,
-    graphObjectName: 'punjab_district',
-  },
-  Rajasthan: {
-    name: 'Rajasthan',
-    geoDataFile: `${MAPS_DIR}/rajasthan.json`,
-    mapType: MAP_TYPES.STATE,
-    graphObjectName: 'rajasthan_district',
-  },
-  Sikkim: {
-    name: 'Sikkim',
-    geoDataFile: `${MAPS_DIR}/sikkim.json`,
-    mapType: MAP_TYPES.STATE,
-    graphObjectName: 'sikkim_district',
-  },
-  'Tamil Nadu': {
-    name: 'Tamil Nadu',
-    geoDataFile: `${MAPS_DIR}/tamil-nadu.json`,
-    mapType: MAP_TYPES.STATE,
-    graphObjectName: 'tamilnadu_district',
-  },
-  Telangana: {
-    name: 'Telangana',
-    geoDataFile: `${MAPS_DIR}/telangana.json`,
-    mapType: MAP_TYPES.STATE,
-    graphObjectName: 'telangana_district',
-  },
-  Tripura: {
-    name: 'Tripura',
-    geoDataFile: `${MAPS_DIR}/tripura.json`,
-    mapType: MAP_TYPES.STATE,
-    graphObjectName: 'tripura_district',
-  },
-  Uttarakhand: {
-    name: 'Uttarakhand',
-    geoDataFile: `${MAPS_DIR}/uttarakhand.json`,
-    mapType: MAP_TYPES.STATE,
-    graphObjectName: 'uttarakhand_district',
-  },
-  'Uttar Pradesh': {
-    name: 'Uttar Pradesh',
-    geoDataFile: `${MAPS_DIR}/uttarpradesh.json`,
-    mapType: MAP_TYPES.STATE,
-    graphObjectName: 'uttarpradesh_district',
-  },
-
-  'West Bengal': {
-    name: 'West Bengal',
-    geoDataFile: `${MAPS_DIR}/westbengal.json`,
-    mapType: MAP_TYPES.STATE,
-    graphObjectName: 'westbengal_district',
-  },
-};
-
 export default function ({data, regionHighlighted, resourcesMeta, currentDate}) {
   const [selectedRegion, setSelectedRegion] = useState({});
   const [currentHoveredRegion, setCurrentHoveredRegion] = useState({});
-  const [currentMap, setCurrentMap] = useState(mapMeta.India);
+  const [currentMap, setCurrentMap] = useState(MAP_META.India);
   const [currentResource, setCurrentResource] = useState(resourcesMeta[0]);
   const [date, setDate] = useState(currentDate);
 
@@ -266,12 +63,8 @@ export default function ({data, regionHighlighted, resourcesMeta, currentDate}) 
       if (currentMap.mapType === MAP_TYPES.COUNTRY) {
         const filteredData = data.states.filter((state) => {
           return name === state.name;
-        });
-        if (filteredData.length === 1) {
-          setCurrentHoveredRegion(filteredData[0]);
-        } else {
-          setCurrentHoveredRegion({});
-        }
+        })[0];
+        setCurrentHoveredRegion(filteredData || {});
       } else if (currentMap.mapType === MAP_TYPES.STATE) {
         const stateObj = data.states.filter((t) => {
           return t.name === currentMap.name;
@@ -306,13 +99,13 @@ export default function ({data, regionHighlighted, resourcesMeta, currentDate}) 
     }
     const isState = !('district' in regionHighlighted);
     if (isState) {
-      const newMap = mapMeta['India'];
+      const newMap = MAP_META['India'];
       setCurrentMap(newMap);
       const region = regionHighlighted.state;
       setCurrentHoveredRegion(region);
       setSelectedRegion(region.name);
     } else {
-      const newMap = mapMeta[regionHighlighted.state.state];
+      const newMap = MAP_META[regionHighlighted.state.state];
       if (!newMap) {
         return;
       }
@@ -322,31 +115,9 @@ export default function ({data, regionHighlighted, resourcesMeta, currentDate}) 
     }
   }, [regionHighlighted, currentMap.mapType, setHoveredRegion]);
 
-  // const getRegionFromDistrict = (districtData, name) => {
-  //   if (!districtData) {
-  //     return;
-  //   }
-  //   const region = {...districtData};
-  //   if (!region.name) {
-  //     region.name = name;
-  //   }
-  //   return region;
-  // };
-
-  // const getRegionFromState = (state) => {
-  //   if (!state) {
-  //     return;
-  //   }
-  //   const region = {...state};
-  //   if (!region.name) {
-  //     region.name = region.state;
-  //   }
-  //   return region;
-  // };
-
   const switchMapToState = useCallback(
     (name) => {
-      const newMap = mapMeta[name];
+      const newMap = MAP_META[name];
       if (!newMap) {
         return;
       }
@@ -354,21 +125,17 @@ export default function ({data, regionHighlighted, resourcesMeta, currentDate}) 
       if (newMap.mapType === MAP_TYPES.COUNTRY) {
         setHoveredRegion(data.states[0].name, newMap);
       } else if (newMap.mapType === MAP_TYPES.STATE) {
-        const _stateObj = data.states.filter((t) => {
+        const stateObj = data.states.filter((t) => {
           return t.name === name;
-        });
+        })[0];
 
-        if (_stateObj.length === 1) {
-          const stateObj = _stateObj[0];
-          // let districtData = stateObj.districts.filter((t) => {
-          //  return t.name === name;
-          // })[0];
+        if (stateObj) {
           const topDistrict = stateObj.districts
             .filter((state) => state.name !== 'Unknown')
             .sort((a, b) => {
               return a.timeline[date][currentResource.capacityIndex] - b.timeline[date][currentResource.capacityIndex];
             })[0];
-          setHoveredRegion(topDistrict, newMap);
+          setHoveredRegion(topDistrict.name, newMap);
         }
       }
     },
@@ -441,13 +208,6 @@ export default function ({data, regionHighlighted, resourcesMeta, currentDate}) 
             </h3>
           </div>
         )}
-
-        {currentMap.mapType === MAP_TYPES.STATE &&
-        currentMapData.Unknown > 0 ? (
-          <h4 className="unknown">
-            Districts unknown for {currentMapData.Unknown} people
-          </h4>
-        ) : null}
 
         {currentMap.mapType === MAP_TYPES.STATE ? (
           <div
