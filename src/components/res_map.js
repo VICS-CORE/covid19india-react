@@ -63,12 +63,8 @@ export default function ({data, regionHighlighted, resourcesMeta, currentDate}) 
       if (currentMap.mapType === MAP_TYPES.COUNTRY) {
         const filteredData = data.states.filter((state) => {
           return name === state.name;
-        });
-        if (filteredData.length === 1) {
-          setCurrentHoveredRegion(filteredData[0]);
-        } else {
-          setCurrentHoveredRegion({});
-        }
+        })[0];
+        setCurrentHoveredRegion(filteredData || {});
       } else if (currentMap.mapType === MAP_TYPES.STATE) {
         const stateObj = data.states.filter((t) => {
           return t.name === currentMap.name;
@@ -129,21 +125,17 @@ export default function ({data, regionHighlighted, resourcesMeta, currentDate}) 
       if (newMap.mapType === MAP_TYPES.COUNTRY) {
         setHoveredRegion(data.states[0].name, newMap);
       } else if (newMap.mapType === MAP_TYPES.STATE) {
-        const _stateObj = data.states.filter((t) => {
+        const stateObj = data.states.filter((t) => {
           return t.name === name;
-        });
+        })[0];
 
-        if (_stateObj.length === 1) {
-          const stateObj = _stateObj[0];
-          // let districtData = stateObj.districts.filter((t) => {
-          //  return t.name === name;
-          // })[0];
+        if (stateObj) {
           const topDistrict = stateObj.districts
             .filter((state) => state.name !== 'Unknown')
             .sort((a, b) => {
               return a.timeline[date][currentResource.capacityIndex] - b.timeline[date][currentResource.capacityIndex];
             })[0];
-          setHoveredRegion(topDistrict, newMap);
+          setHoveredRegion(topDistrict.name, newMap);
         }
       }
     },
