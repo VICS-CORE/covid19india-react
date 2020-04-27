@@ -1047,7 +1047,7 @@ table {
       padding: 0.25rem;
       font-size: 0.9rem;
       border-radius: 5px;
-      text-align: right;
+      text-align: center;
       .deltas {
         display: inline-block;
 		    font-size: 10px !important;
@@ -3699,4 +3699,8 @@ select {
     font-weight: 500;
     font-size: 0.7rem;
   }
+}
+
+h5.capacity{
+  margin-top: 3px;
 }
