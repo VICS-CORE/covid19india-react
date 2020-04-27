@@ -37,7 +37,7 @@ function ResourcesLevel(props) {
             {featureFlags.showUtilization &&
               <span>
                 <h1 className='title'>{formatNumber(capacity - utilization)}</h1>
-                <h5>[ {formatNumber(capacity)} ]</h5>
+                <h5 className='capacity'>[ {formatNumber(capacity)} ]</h5>
               </span>
             }
             {!featureFlags.showUtilization && <h1 className='title'>{formatNumber(capacity)}</h1> }

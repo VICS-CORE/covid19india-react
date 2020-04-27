@@ -102,12 +102,12 @@ function ResourcesRow(props) {
           const utilization = state.timeline[date][resource.utilizationIndex]
           return (
             <td key={resource.name}>
-              <span className="table__count-text">
+              <div className="table__count-text">
                 {formatNumber(capacity - utilization)}
-              </span>
-              <span className="deltas">
+              </div>
+              <div className="deltas">
                 &nbsp; [ {formatNumber(capacity)} ]
-              </span>
+              </div>
             </td>
           )
         })}
@@ -206,12 +206,12 @@ function ResourcesRow(props) {
                     const utilization = district.timeline[date][resource.utilizationIndex]
                     return (
                       <td key={resource.name}>
-                        <span className="table__count-text">
+                        <div className="table__count-text">
                           {formatNumber(capacity - utilization)}
-                        </span>
-                        <span className="deltas">
+                        </div>
+                        <div className="deltas">
                           &nbsp; [ {formatNumber(capacity)} ]
-                        </span>
+                        </div>
                       </td>
                     )
                   })}
