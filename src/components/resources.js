@@ -3,6 +3,7 @@ import axios from 'axios';
 import {formatDistance, format} from 'date-fns';
 import {formatDate, formatDateAbsolute} from '../utils/common-functions';
 import {RESOURCES_META} from '../constants';
+import {featureFlags} from '../conf/settings';
 
 import ResourcesTable from './res_table';
 import ResourcesLevel from './res_level';
@@ -30,7 +31,6 @@ function Resources(props) {
 
   const getResourcesData = async () => {
     try {
-      console.log(dataURL);
       const [responseTimeline] = await Promise.all([
         axios.get(
           dataURL
@@ -65,11 +65,14 @@ function Resources(props) {
   };
 
   const onClickHeader = () => {
-    if (dataURL == 'https://vics-core.github.io/covid-api/medresources/timeline.json')
+    if (dataURL == 'https://vics-core.github.io/covid-api/medresources/timeline.json'){
       setDataURL('https://demo6934508.mockable.io/med_resources_timeline.json');
-    else
+      featureFlags.showUtilization = true;
+    }
+    else {
       setDataURL('https://vics-core.github.io/covid-api/medresources/timeline.json');
-
+      featureFlags.showUtilization = false;
+    }
     setFetched(false);
   };
 
@@ -117,6 +120,7 @@ function Resources(props) {
             data={resourcesData}
             resourcesMeta={RESOURCES_META}
             date={date}
+            featureFlags={featureFlags}
           />
           <ResourcesTable
             data={resourcesData}
@@ -134,6 +138,7 @@ function Resources(props) {
                 regionHighlighted={regionHighlighted}
                 resourcesMeta={RESOURCES_META}
                 currentDate={date}
+                flags={featureFlags}
               />
 
               <div

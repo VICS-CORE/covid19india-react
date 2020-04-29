@@ -86,7 +86,9 @@ function ResourcesTable(props) {
   return (
     <React.Fragment>
       <h5 className="table-fineprint fadeInUp" style={{animationDelay: '1.5s'}}>
-        Numbers may not be accurate. For demo purpose only.
+        <a href="https://demo6934508.mockable.io/med_resources_timeline.json" target="_blank" > Demo data </a>
+        & <a href="https://vics-core.github.io/covid-api/medresources/timeline.json" target="_blank"> Collected data </a>
+        ( Data collection is in progress )
       </h5>
       <table className="table fadeInUp" style={{animationDelay: '1.8s'}}>
         <thead>

@@ -944,10 +944,11 @@ abbr {
   color: $gray-mid;
   margin-bottom: 0.25rem;
   margin-right: 0.25rem;
-  margin-top: 0.50rem;
+  margin-top: 1.00rem;
+  text-transform: none;
   a {
     text-decoration: none;
-    color: inherit;
+    color: rgb(108, 117, 125);
     border-bottom: 2px solid $gray-hover;
     transition: all 0.2s ease-in-out;
     &:hover {
