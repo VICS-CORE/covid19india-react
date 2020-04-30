@@ -8,12 +8,13 @@ import {
 } from '../utils/common-functions';
 import {formatDistance} from 'date-fns';
 
-export default function ({data, regionHighlighted, resourcesMeta, currentDate}) {
+export default function ({data, regionHighlighted, resourcesMeta, currentDate, flags}) {
   const [selectedRegion, setSelectedRegion] = useState({});
   const [currentHoveredRegion, setCurrentHoveredRegion] = useState({});
   const [currentMap, setCurrentMap] = useState(MAP_META.India);
   const [currentResource, setCurrentResource] = useState(resourcesMeta[0]);
   const [date, setDate] = useState(currentDate);
+  const [featureFlags, setFeatureFlags] = useState(flags);
 
   useEffect(() => {
     const region = data.states[0];
@@ -27,7 +28,7 @@ export default function ({data, regionHighlighted, resourcesMeta, currentDate}) 
   const [statistic, currentMapData] = useMemo(() => {
     const statistic = {
       total: 0,
-      maxResourceUtilization: 0,
+      max: 0,
     };
     let currentMapData = {};
     let _stats = {};
@@ -44,14 +45,21 @@ export default function ({data, regionHighlighted, resourcesMeta, currentDate}) 
 
     currentMapData = _stats.reduce((acc, state) => {
       const capacity = parseInt(state.timeline[date][currentResource.capacityIndex]) || 1;
-      const utilization = parseInt(state.timeline[date][currentResource.utilizationIndex]);
-      const utilizationRatio = (utilization/capacity)*100;
 
-      statistic.total += utilizationRatio;
-      statistic.maxResourceUtilization =
-        utilizationRatio > statistic.maxResourceUtilization ? utilizationRatio : statistic.maxResourceUtilization;
+      if(featureFlags.showUtilization){
+        const utilization = parseInt(state.timeline[date][currentResource.utilizationIndex]);
+        const utilizationRatio = (utilization/capacity)*100;
+        statistic.total += utilizationRatio;
+        statistic.max =
+          utilizationRatio > statistic.max ? utilizationRatio : statistic.max;
 
-      acc[state.name] = utilizationRatio;
+        acc[state.name] = utilizationRatio;
+      }
+      else{
+        statistic.total += capacity;
+        statistic.max = capacity > statistic.max ? capacity : statistic.max;
+        acc[state.name] = capacity;
+      }
       return acc;
     }, {});
 
@@ -172,10 +180,21 @@ export default function ({data, regionHighlighted, resourcesMeta, currentDate}) 
               onClick={() => changeResource(resource)}
             >
               <h5>{resource.title}</h5>
-              <div className="stats-bottom">
-                <h1>{ formatNumber(capacity - utilization) }</h1>
-                <h6>&nbsp;[{formatNumber(capacity)}]</h6>
-              </div>
+              { featureFlags.showUtilization &&
+                <React.Fragment>
+                  <div className="stats-bottom">
+                    <h1>{ formatNumber(capacity - utilization) }</h1>
+                  </div>
+                  <div>
+                    <h6>&nbsp;[{formatNumber(capacity)}]</h6>
+                  </div>
+                </React.Fragment>
+              }
+              { !featureFlags.showUtilization &&
+                <div className="stats-bottom">
+                  <h1>{ formatNumber(capacity) }</h1>
+                </div>
+              }
             </div>
           );
         })}
@@ -228,6 +247,7 @@ export default function ({data, regionHighlighted, resourcesMeta, currentDate}) 
         selectedRegion={selectedRegion}
         setSelectedRegion={setSelectedRegion}
         currentResource={currentResource}
+        flags={featureFlags}
       />
     </div>
   );

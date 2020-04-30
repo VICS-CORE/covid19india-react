@@ -18,6 +18,7 @@ function ChoroplethMap({
   selectedRegion,
   setSelectedRegion,
   currentResource,
+  flags
 }) {
   const choroplethMap = useRef(null);
   const [svgRenderCount, setSvgRenderCount] = useState(0);
@@ -76,7 +77,7 @@ function ChoroplethMap({
             n === 0
               ? '#ffffff'
               : d3[currentResource.color](
-                  (maxInterpolation * n) / (statistic.maxResourceUtilization || 0.001)
+                  (maxInterpolation * n) / (statistic.max || 0.001)
                 );
           return color;
         })
@@ -131,7 +132,7 @@ function ChoroplethMap({
       setSelectedRegion,
       mapData,
       currentResource.color,
-      statistic.maxResourceUtilization,
+      statistic.max,
       statistic.total,
       changeMap,
     ]
@@ -152,7 +153,7 @@ function ChoroplethMap({
     const maxInterpolation = 0.8;
     const color = d3
       .scaleSequential(d3[currentResource.color])
-      .domain([0, statistic.maxResourceUtilization / maxInterpolation || 10]);
+      .domain([0, statistic.max / maxInterpolation || 10]);
 
     let cells = null;
     let label = null;
@@ -170,7 +171,7 @@ function ChoroplethMap({
 
     const numCells = 6;
     const delta = Math.floor(
-      (statistic.maxResourceUtilization < numCells ? numCells : statistic.maxResourceUtilization) /
+      (statistic.max < numCells ? numCells : statistic.max) /
         (numCells - 1)
     );
 
@@ -181,13 +182,15 @@ function ChoroplethMap({
       .attr('class', 'legendLinear')
       .attr('transform', 'translate(1, 335)');
 
+    const title = currentResource.title + (flags.showUtilization ? ' Utilization %' : '')
+
     const legendLinear = legendColor()
       .shapeWidth(36)
       .shapeHeight(10)
       .cells(cells)
       .titleWidth(3)
       .labels(label)
-      .title(currentResource.title + ' Utilization %')
+      .title(title)
       .orient('vertical')
       .scale(color);
 
@@ -196,7 +199,7 @@ function ChoroplethMap({
       .call(legendLinear)
       .selectAll('text')
       .style('font-size', '10px');
-  }, [currentResource, statistic.maxResourceUtilization]);
+  }, [currentResource, statistic.max]);
 
   useEffect(() => {
     (async () => {

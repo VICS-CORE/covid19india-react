@@ -1,12 +1,12 @@
 import React, {useState, useEffect} from 'react';
 import {formatNumber} from '../utils/common-functions';
-import {featureFlags} from '../conf/settings';
 
 function ResourcesLevel(props) {
   const [data, setData] = useState(props.data);
   const [resourcesMeta, setResourcesMeta] = useState(props.resourcesMeta);
   const [total, setTotal] = useState({});
   const [date, setDate] = useState(props.date);
+  const [featureFlags, setFeatureFlags] = useState(props.featureFlags);
 
   useEffect(() => {
     setData(props.data);
