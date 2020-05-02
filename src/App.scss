@@ -709,6 +709,24 @@ h6 {
         margin-top: 0.25rem;
         color: $gray;
       }
+      a {
+        text-transform: uppercase;
+        font-family: 'Archia';
+        font-size: small;
+        border-bottom: 2px solid $gray-hover;
+        transition: all 0.2s ease-in-out;
+        padding: 0.25 rem;
+        background: #007bff10;
+        font-weight: 700;
+        color: $blue-mid;
+        cursor: pointer;
+        &:hover {
+          background: $gray-hover;
+        }
+      }
+      .real{
+        color: $green-mid;
+      }
     }
 
     & > * {
