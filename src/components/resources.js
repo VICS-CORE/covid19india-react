@@ -64,17 +64,17 @@ function Resources(props) {
     }
   };
 
-  const onClickHeader = () => {
-    if (dataURL == 'https://vics-core.github.io/covid-api/medresources/timeline.json'){
-      setDataURL('https://demo6934508.mockable.io/med_resources_timeline.json');
-      featureFlags.showUtilization = true;
-    }
-    else {
-      setDataURL('https://vics-core.github.io/covid-api/medresources/timeline.json');
-      featureFlags.showUtilization = false;
-    }
+  const showDataData = () => {
+    setDataURL('https://demo6934508.mockable.io/med_resources_timeline.json');
+    featureFlags.showUtilization = true;
     setFetched(false);
-  };
+  }
+
+  const showRealData = () => {
+    setDataURL('https://vics-core.github.io/covid-api/medresources/timeline.json');
+    featureFlags.showUtilization = false;
+    setFetched(false);
+  }
 
   const onHighlightState = (state, index) => {
     if (!state && !index) setRegionHighlighted(null);
@@ -93,6 +93,8 @@ function Resources(props) {
             <div className="header-mid">
               <div className="titles">
                 <h1>Available Medical Resources</h1>
+                <a className="demo" onClick={showDataData}> Demo Data </a>&nbsp;
+                <a className="real" onClick={showRealData}> Real Data </a>
                 <h6 style={{fontWeight: 600}}>
                   Proposed addition to covid tracker
                 </h6>
@@ -145,7 +147,7 @@ function Resources(props) {
                 className="timeseries-header fadeInUp"
                 style={{animationDelay: '2.5s'}}
               >
-                <h1 onClick={onClickHeader}>Resource Trends</h1>
+                <h1>Resource Trends</h1>
                 <div className="tabs">
                   <div
                     className={`tab ${graphOption === 1 ? 'focused' : ''}`}
