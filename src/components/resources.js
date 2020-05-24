@@ -20,7 +20,7 @@ function Resources(props) {
   const [timeseriesMode, setTimeseriesMode] = useState(false);
   const [timeseriesLogMode, setTimeseriesLogMode] = useState(false);
   const [regionHighlighted, setRegionHighlighted] = useState(undefined);
-  const date = format(new Date(), 'yyyy-MM-dd');
+  const date = '2020-05-23'
   const [dataURL, setDataURL] = useState('https://demo6934508.mockable.io/med_resources_timeline.json');
   
   useEffect(() => {
@@ -71,7 +71,7 @@ function Resources(props) {
   }
 
   const showRealData = () => {
-    setDataURL('https://vics-core.github.io/covid-api/medresources/timeline.json');
+    setDataURL('https://vics-core.github.io/covid-api/medresources/covid_warrioros_resource.json');
     featureFlags.showUtilization = false;
     setFetched(false);
   }
