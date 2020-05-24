@@ -3,10 +3,10 @@ import {formatNumber} from '../utils/common-functions';
 
 function ResourcesLevel(props) {
   const [data, setData] = useState(props.data);
-  const [resourcesMeta, setResourcesMeta] = useState(props.resourcesMeta);
+  const [resourcesMeta] = useState(props.resourcesMeta);
   const [total, setTotal] = useState({});
-  const [date, setDate] = useState(props.date);
-  const [featureFlags, setFeatureFlags] = useState(props.featureFlags);
+  const [date] = useState(props.date);
+  const [featureFlags] = useState(props.featureFlags);
 
   useEffect(() => {
     setData(props.data);
@@ -19,7 +19,7 @@ function ResourcesLevel(props) {
     if (data.last_updated_time) {
       parseData();
     }
-  }, [data]);
+  }, [data, date]);
 
   return (
     <div className="Level">
@@ -33,19 +33,21 @@ function ResourcesLevel(props) {
             className={className}
             style={{animationDelay: '1s'}}
           >
-            <h5 className='heading'>{resource.title}</h5>
-            {featureFlags.showUtilization &&
-              <span>
-                <h1 className='title'>{formatNumber(capacity - utilization)}</h1>
-                <h5 className='capacity'>[ {formatNumber(capacity)} ]</h5>
-              </span>
-            }
-            {!featureFlags.showUtilization && <h1 className='title'>{formatNumber(capacity)}</h1> }
+            <h5>{resource.title}</h5>
+            {featureFlags.showUtilization && (
+              <React.Fragment>
+                <h1>{formatNumber(capacity - utilization)}</h1>
+                <h5 className="capacity">[ {formatNumber(capacity)} ]</h5>
+              </React.Fragment>
+            )}
+            {!featureFlags.showUtilization && (
+              <h1 className="title">{formatNumber(capacity)}</h1>
+            )}
           </div>
         );
       })}
     </div>
-  )
+  );
 }
 
 export default ResourcesLevel;

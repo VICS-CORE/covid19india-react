@@ -174,7 +174,7 @@ body {
 
 h1 {
   font-family: 'archia';
-  font-size: 24px !important;
+  font-size: 19px !important;
   font-weight: 900;
   text-transform: uppercase;
 }
@@ -709,6 +709,7 @@ h6 {
         margin-top: 0.25rem;
         color: $gray;
       }
+
       a {
         text-transform: uppercase;
         font-family: 'Archia';
@@ -724,6 +725,7 @@ h6 {
           background: $gray-hover;
         }
       }
+
       .real{
         color: $green-mid;
       }
@@ -858,22 +860,16 @@ h6 {
   .level-item {
     display: flex;
     flex-direction: column;
+    width: 20%;
 
     & > * {
       align-self: center;
-    }
-
-    &:first-child {
-      margin-left: 0.5rem;
-    }
-
-    &:last-child {
-      margin-right: 0.5rem;
     }
   }
 
   h1,
   h5 {
+    font-weight: 600;
     margin-bottom: 0;
   }
 
@@ -883,6 +879,12 @@ h6 {
 
   h4 {
     margin-bottom: -0.5rem;
+  }
+
+  h5 {
+    overflow-wrap: break-word;
+    text-align: center;
+    width: 100%;
   }
 
   .is-cherry {
@@ -962,7 +964,7 @@ abbr {
   color: $gray-mid;
   margin-bottom: 0.25rem;
   margin-right: 0.25rem;
-  margin-top: 1.00rem;
+  margin-top: 1rem;
   text-transform: none;
   a {
     text-decoration: none;
@@ -3702,7 +3704,7 @@ select {
   }
 
   .mobile-disclaimer-button {
-    background-color: #ffffff;
+    background-color: #fff;
     color: #808080;
     font-size: xx-small;
     justify-content: center;
