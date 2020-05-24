@@ -20,7 +20,7 @@ function Resources(props) {
   const [timeseriesMode, setTimeseriesMode] = useState(false);
   const [timeseriesLogMode, setTimeseriesLogMode] = useState(false);
   const [regionHighlighted, setRegionHighlighted] = useState(undefined);
-  const date = '2020-05-23'
+  const date = format(new Date(), 'yyyy-MM-dd');
   const [dataURL, setDataURL] = useState('https://demo6934508.mockable.io/med_resources_timeline.json');
   
   useEffect(() => {
