@@ -229,65 +229,6 @@ function Home(props) {
             </React.Fragment>
           )}
         </div>
-
-        {/* <div className="floating-buttons">
-          <button
-            className="table-nav fadeInUp"
-            onClick={scrollHandlers[0]}
-            style={{animationDelay: '2.2s'}}
-          >
-            <Icon.Grid />
-          </button>
-          <button
-            className="map-nav fadeInUp"
-            onClick={scrollHandlers[1]}
-            style={{animationDelay: '2.1s'}}
-          >
-            <Icon.MapPin />
-          </button>
-          <button
-            className="trends-nav fadeInUp"
-            onClick={scrollHandlers[2]}
-            style={{animationDelay: '2s'}}
-          >
-            <Icon.TrendingUp />
-          </button>
-        </div> */}
-
-        {/* <div className="home-left">
-        {patients.length > 1 && (
-          <div className="patients-summary">
-            <h1>Recent Cases</h1>
-            <h6>A summary of the latest reported cases</h6>
-            <div className="legend">
-              <div className="legend-left">
-                <div className="circle is-female"></div>
-                <h5 className="is-female">Female</h5>
-                <div className="circle is-male"></div>
-                <h5 className="is-male">Male</h5>
-                <div className="circle"></div>
-                <h5 className="">Unknown</h5>
-              </div>
-            </div>
-            <div className="patients-summary-wrapper">
-              <Patients
-                patients={patients}
-                summary={true}
-                colorMode={'genders'}
-                expand={true}
-              />
-            </div>
-            <button className="button">
-              <Link to="/database">
-                <Icon.Database />
-                <span>View the Patients Database</span>
-              </Link>
-            </button>
-          </div>
-        )}
-      </div>
-      <div className="home-right"></div>
-    */}
       </div>
 
       <div className="Home">
