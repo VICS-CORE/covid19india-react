@@ -71,7 +71,7 @@ function Resources(props) {
   }
 
   const showRealData = () => {
-    setDataURL('https://vics-core.github.io/covid-api/medresources/covid_warrioros_resource.json');
+    setDataURL('https://vics-core.github.io/covid-api/medresources/timeline.json');
     featureFlags.showUtilization = false;
     setFetched(false);
   }
