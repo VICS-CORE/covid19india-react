@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "bd841849beff1f5c78ace9027d9ac7e0",
+    "revision": "b8568fbe8fe5e64200e0db055126b3d8",
     "url": "/covid19india-react/index.html"
   },
   {
@@ -16,12 +16,12 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/covid19india-react/static/js/0.14dca4c7.chunk.js"
   },
   {
-    "revision": "72b99e373e7bdaddba36",
-    "url": "/covid19india-react/static/js/1.ade735cc.chunk.js"
+    "revision": "e2dd1fa9c55e221d8958",
+    "url": "/covid19india-react/static/js/1.4ce8bed7.chunk.js"
   },
   {
     "revision": "81896c98bac7b5b16ab1d3790da5b937",
-    "url": "/covid19india-react/static/js/1.ade735cc.chunk.js.LICENSE.txt"
+    "url": "/covid19india-react/static/js/1.4ce8bed7.chunk.js.LICENSE.txt"
   },
   {
     "revision": "d129234e99d678f083fe",
@@ -124,8 +124,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/covid19india-react/static/js/LanguageSwitcher.b8894040.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "d32ea52862f803a2871f",
-    "url": "/covid19india-react/static/js/Level.5dee6409.chunk.js"
+    "revision": "d582aa93c03d709fca3d",
+    "url": "/covid19india-react/static/js/Level.e800a8ed.chunk.js"
   },
   {
     "revision": "041234ea3ca6c6d5d13f",
@@ -144,36 +144,36 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/covid19india-react/static/js/Minigraph.191e084e.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "019f077aa2b9a9074960",
-    "url": "/covid19india-react/static/js/Row.5083614f.chunk.js"
+    "revision": "2c08bc129dc7383a9468",
+    "url": "/covid19india-react/static/js/Row.bfbc0a6e.chunk.js"
   },
   {
     "revision": "0b117057a87d6b640f49",
     "url": "/covid19india-react/static/js/State.efc6e026.chunk.js"
   },
   {
-    "revision": "3127a9621b818270440e",
-    "url": "/covid19india-react/static/js/Table.1db749ec.chunk.js"
+    "revision": "030f5cb2df565956c4b4",
+    "url": "/covid19india-react/static/js/Table.b904c037.chunk.js"
   },
   {
     "revision": "528fdae7b524e558be2c",
     "url": "/covid19india-react/static/js/TimeSeries.45cf71aa.chunk.js"
   },
   {
-    "revision": "f90936a8510a6c9304ea",
-    "url": "/covid19india-react/static/js/TimeSeriesExplorer.5f125aaf.chunk.js"
+    "revision": "ee34903766b4850d84e3",
+    "url": "/covid19india-react/static/js/TimeSeriesExplorer.8309dedf.chunk.js"
   },
   {
     "revision": "b104179b62400e38a9b0",
     "url": "/covid19india-react/static/js/Updates.8ca24909.chunk.js"
   },
   {
-    "revision": "a85c34f589feed2a60c2",
-    "url": "/covid19india-react/static/js/main.62d2dac9.chunk.js"
+    "revision": "8b47a0b26b4f7a95bf20",
+    "url": "/covid19india-react/static/js/main.4f57a73d.chunk.js"
   },
   {
-    "revision": "e17c10928f6e74802a03",
-    "url": "/covid19india-react/static/js/runtime-main.08dd142d.js"
+    "revision": "5a561be32c243d5a0c33",
+    "url": "/covid19india-react/static/js/runtime-main.fa629d6d.js"
   },
   {
     "revision": "013f0b90a4cae7b8bbf13e3fd9e7dc4a",
