@@ -24,8 +24,8 @@
     "Essentials.js.map": "/static/js/Essentials.087b3797.chunk.js.map",
     "Footer.js": "/static/js/Footer.35a4e256.chunk.js",
     "Footer.js.map": "/static/js/Footer.35a4e256.chunk.js.map",
-    "Home.js": "/static/js/Home.7a24e9fc.chunk.js",
-    "Home.js.map": "/static/js/Home.7a24e9fc.chunk.js.map",
+    "Home.js": "/static/js/Home.0872c4ef.chunk.js",
+    "Home.js.map": "/static/js/Home.0872c4ef.chunk.js.map",
     "LanguageSwitcher.js": "/static/js/LanguageSwitcher.a705b7c4.chunk.js",
     "LanguageSwitcher.js.map": "/static/js/LanguageSwitcher.a705b7c4.chunk.js.map",
     "Level.js": "/static/js/Level.8a11f186.chunk.js",
@@ -50,8 +50,8 @@
     "Updates.js.map": "/static/js/Updates.90ee9350.chunk.js.map",
     "main.js": "/static/js/main.33ccccf9.chunk.js",
     "main.js.map": "/static/js/main.33ccccf9.chunk.js.map",
-    "runtime-main.js": "/static/js/runtime-main.f8ab9d43.js",
-    "runtime-main.js.map": "/static/js/runtime-main.f8ab9d43.js.map",
+    "runtime-main.js": "/static/js/runtime-main.116f32dc.js",
+    "runtime-main.js.map": "/static/js/runtime-main.116f32dc.js.map",
     "static/js/25.135bcf83.chunk.js": "/static/js/25.135bcf83.chunk.js",
     "static/js/25.135bcf83.chunk.js.map": "/static/js/25.135bcf83.chunk.js.map",
     "static/js/26.c5e1226d.chunk.js": "/static/js/26.c5e1226d.chunk.js",
@@ -71,7 +71,7 @@
     "static/js/33.9c080581.chunk.js": "/static/js/33.9c080581.chunk.js",
     "static/js/33.9c080581.chunk.js.map": "/static/js/33.9c080581.chunk.js.map",
     "index.html": "/index.html",
-    "precache-manifest.3c4aec87a598126a45aaaffc355aff05.js": "/precache-manifest.3c4aec87a598126a45aaaffc355aff05.js",
+    "precache-manifest.f76b9fd3f9cd722a4f03a90a57b20df2.js": "/precache-manifest.f76b9fd3f9cd722a4f03a90a57b20df2.js",
     "service-worker.js": "/service-worker.js",
     "static/css/3.ab33d419.chunk.css.map": "/static/css/3.ab33d419.chunk.css.map",
     "static/css/App.176f818c.chunk.css.map": "/static/css/App.176f818c.chunk.css.map",
@@ -85,7 +85,7 @@
     "static/media/getFetch.cjs": "/static/media/getFetch.013f0b90.cjs"
   },
   "entrypoints": [
-    "static/js/runtime-main.f8ab9d43.js",
+    "static/js/runtime-main.116f32dc.js",
     "static/js/25.135bcf83.chunk.js",
     "static/js/main.33ccccf9.chunk.js"
   ]
