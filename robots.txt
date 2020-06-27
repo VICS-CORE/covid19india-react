@@ -1,4 +1,4 @@
 # https://www.robotstxt.org/robotstxt.html
-Sitemap: https://www.covid19india.org/sitemap.xml
+Sitemap: https://seva.ml/sitemap.xml
 User-agent: *
 Disallow:
