@@ -48,7 +48,7 @@ const schemaMarkup = {
 ReactGA.initialize('UA-165213678-1');
 
 function App() {
-  const darkMode = useDarkMode(false);
+  const darkMode = useDarkMode(true);
   const [showLanguageSwitcher, setShowLanguageSwitcher] = useState(false);
   let location = useLocation();
 

@@ -1578,38 +1578,46 @@ h6 {
 }
 
 .github {
-  background: #000 !important;
-  color: #fff !important;
+  color: #F4CBB2 !important;
   justify-content: center;
   padding-left: 0.65rem;
   transition: all 0.2s ease-in-out;
-  width: 15.5rem;
 
   &:hover {
-    background: $gray-dark !important;
+    color: #de9c74;
   }
 }
 
 .twitter {
-  width: 15.5rem;
-  color: $white;
-  background: $blue-mid;
+  color: #00acee;
+  margin: 0 0.5rem;
+  justify-content: center;
+  transition: all 0.2s ease-in-out;
 
   &:hover {
-    background: $pblue-mid;
+    color: #4099FF;
   }
 }
 
 .facebook {
-  background: $blue-fb !important;
-  color: #fff !important;
+  color: $blue-fb !important;
   justify-content: center;
-  padding-left: 0.65rem;
   transition: all 0.2s ease-in-out;
-  width: 15.5rem;
+  margin: 0 0.5rem;
 
   &:hover {
-    background: $blue-fb-hover !important;
+    color: $blue-fb-hover !important;
+  }
+}
+
+.linkedin {
+  color: #0e76a8;
+  justify-content: center;
+  margin: 0 0.5rem;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    color: #0d587b;
   }
 }
 
