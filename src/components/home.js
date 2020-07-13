@@ -13,10 +13,6 @@ const TimeSeriesExplorer = lazy(() =>
   import('./timeseriesexplorer' /* webpackChunkName: "TimeSeriesExplorer" */)
 );
 
-const MapExplorer = lazy(() =>
-  import('./mapexplorer' /* webpackChunkName: "MapExplorer" */)
-);
-
 const Actions = lazy(() =>
   import('./actions' /* webpackChunkName: "Actions" */)
 );
@@ -71,7 +67,6 @@ function Home(props) {
   });
 
   const [anchor, setAnchor] = useState(null);
-  const [mapStatistic, setMapStatistic] = useState('active');
   const today = format(new Date(), 'yyyy-MM-dd');
   const [date, setDate] = useState(today);
   const [data, setData] = useState({});
@@ -172,18 +167,6 @@ function Home(props) {
         <div className="home-right" ref={homeRightElement}>
           {isVisible && (
             <React.Fragment>
-              {data && (
-                <Suspense fallback={<div />}>
-                  <MapExplorer
-                    stateCode="TT"
-                    {...{data}}
-                    {...{mapStatistic, setMapStatistic}}
-                    {...{regionHighlighted, setRegionHighlighted}}
-                    {...{anchor, setAnchor}}
-                  />
-                </Suspense>
-              )}
-
               {timeseries['TT'] && (
                 <Suspense fallback={<div />}>
                   <TimeSeriesExplorer

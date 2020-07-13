@@ -9,6 +9,16 @@ function Footer(props) {
     <footer className="fadeInUp" style={{animationDelay: '2s'}}>
       <h3>{t('Look forward and drive!')}</h3>
 
+       <div className="link"> 
+        <a
+          href="https://seva.ml"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          seva.ml
+        </a>
+      </div>
+
       <a
         href="https://www.facebook.com/indiacovidseva"
         target="_blank"
@@ -32,6 +42,17 @@ function Footer(props) {
       </a>
 
       <a
+        href="https://www.linkedin.com/company/indiacovidseva"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="button linkedin"
+        style={{justifyContent: 'center'}}
+      >
+        <Icon.Linkedin />
+        <span>{t('Connect with us on LinkedIn')}</span>
+      </a>
+
+      <a
         href="https://github.com/VICS-CORE/covid19india-react"
         className="button github"
         target="_blank"
@@ -41,8 +62,7 @@ function Footer(props) {
         <span>{t('Open Sourced on GitHub')}</span>
       </a>
 
-      <h5>Built on covid19india.org</h5>
-
+        <h5>Built on covid19india.org</h5>
     </footer>
   );
 }

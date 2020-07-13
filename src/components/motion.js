@@ -6,8 +6,7 @@
 
 import {format} from 'date-fns';
 import Highcharts from 'highcharts/highstock';
-import {transform, isEmpty} from 'lodash';
-import {VIDEO_PLAYER} from '../constants'
+import {transform, isEmpty, filter} from 'lodash';
 import 'font-awesome/css/font-awesome.min.css';
 
 // JSLint options:
@@ -93,6 +92,90 @@ import 'font-awesome/css/font-awesome.min.css';
       'dd MMM, yyyy'
     );
 
+    // predictionControl div wrapper for radio buttons
+    this.predictionControl = H.createElement(
+      'div',
+      {
+        id: 'prediction-control'
+      },
+      null,
+      this.chart.renderTo,
+      null
+    );
+
+    this.noPrediction = H.createElement(
+      'input',
+      {
+        type: 'radio',
+        name: 'prediction-control',
+        id: 'no-prediction',
+        value: 0,
+        checked: true
+      },
+      null,
+      this.predictionControl,
+      null
+    );
+
+    this.noPredictionLabel = H.createElement(
+      'label',
+      {
+        for: 'no-prediction'
+      },
+      null,
+      this.predictionControl,
+      null
+    );
+    this.noPredictionLabel.innerHTML = 'No Prediction';
+
+    this.shortTermPrediction = H.createElement(
+      'input',
+      {
+        type: 'radio',
+        name: 'prediction-control',
+        id: 'short-term-prediction',
+        value: 20
+      },
+      null,
+      this.predictionControl,
+      null
+    );
+
+    this.shortTermPredictionLabel = H.createElement(
+      'label',
+      {
+        for: 'short-term-prediction'
+      },
+      null,
+      this.predictionControl,
+      null
+    );
+    this.shortTermPredictionLabel.innerHTML = 'Short Term Prediction';
+
+    this.longTermPrediction = H.createElement(
+      'input',
+      {
+        type: 'radio',
+        name: 'prediction-control',
+        id: 'long-term-prediction',
+        value: 'Infinite'
+      },
+      null,
+      this.predictionControl,
+      null
+    );
+
+    this.longTermPredictionLabel = H.createElement(
+      'label',
+      {
+        for: 'long-term-prediction'
+      },
+      null,
+      this.predictionControl,
+      null
+    );
+    this.longTermPredictionLabel.innerHTML = 'Long Term Prediction';
+
     // Common key event handler function
     function handleKeyEvents(e) {
       e = e || window.event;
@@ -128,6 +211,9 @@ import 'font-awesome/css/font-awesome.min.css';
     Highcharts.addEvent(this.playRange, 'input', function () {
       motion.updateChart(this.value);
     });
+    Highcharts.addEvent(this.predictionControl, 'change', function(){
+      motion.updateChart(motion.playRange.value);
+    })
 
     // Request focus to the controls when clicking on controls div
     Highcharts.addEvent(this.playControls, 'click', function () {
@@ -236,27 +322,37 @@ import 'font-awesome/css/font-awesome.min.css';
     let series;
     let data;
     const roundedInput = this.options.labels[this.round(inputValue)];
-    if (this.currentAxisValue !== roundedInput) {
+    const predictionControl = filter([this.noPrediction, this.shortTermPrediction, this.longTermPrediction], 'checked')[0].value;
+    if (this.currentAxisValue !== roundedInput || this.predictionControl.value !== predictionControl) {
       this.currentAxisValue = roundedInput;
+      this.predictionControl.value = predictionControl;
       this.chart.options.motion.startIndex = roundedInput;
       for (seriesKey in this.dataSeries) {
         if (this.dataSeries.hasOwnProperty(seriesKey)) {
           series = this.dataSeries[seriesKey];
-          if (isEmpty(series.options.fullData)) return;
-          const fullData = series.options.fullData[roundedInput].TT;
+          const fullData = this.chart.options.chart.fullData && this.chart.options.chart.fullData[roundedInput].TT;
+          if (isEmpty(fullData)) return;
           if(seriesKey === '0'){
             data = updateConfirmedCases(fullData, roundedInput);
           }
           else if(seriesKey === '1'){
-            data = updatePredictedCases(fullData, roundedInput);
+            data = updatePredictedCases(fullData, roundedInput, predictionControl);
           }
           series.setData(data);
         }
       }
+      updateYAxis(predictionControl);
       this.chart.redraw();
       this.attractToStep();
     }
   };
+
+  function updateYAxis(predictionControl){
+    const max = isNaN(predictionControl) ? 175000 : 40000
+    H.each(H.charts, function(p, i) {p.yAxis[0].update({
+      max: max
+    })});
+  }
 
   function updateConfirmedCases(fullData, selectedDate){
     return transform(fullData, function(res, v, k) {
@@ -264,9 +360,9 @@ import 'font-awesome/css/font-awesome.min.css';
     }, [])    
   }
 
-  function updatePredictedCases(fullData, selectedDate){
+  function updatePredictedCases(fullData, selectedDate, predictionControl){
     return transform(fullData, function(res, v, k) {
-      if(VIDEO_PLAYER.predictionLookAhead && res.length >= VIDEO_PLAYER.predictionLookAhead) return;
+      if(!isNaN(predictionControl) && res.length >= predictionControl) return;
       if(k>=selectedDate){res.push({x: new Date(k), y: v.c})};
     }, []);
   }

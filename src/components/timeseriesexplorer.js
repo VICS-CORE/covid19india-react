@@ -22,10 +22,6 @@ const TimeSeries = lazy(() =>
   import('./timeseries' /* webpackChunkName: "TimeSeries" */)
 );
 
-const VideoPlayer = lazy(() =>
-  import('./videoplayer')
-);
-
 function TimeSeriesExplorer({
   timeseries,
   date: timelineDate,
@@ -58,7 +54,7 @@ function TimeSeriesExplorer({
       );
       filteredDates = filteredDates.filter((date) => date <= today);
 
-      if (cutOffDate != today) {
+      if (cutOffDate !== today) {
         filteredDates = filteredDates.filter((date) => date >= cutOffDate);
       }
     } else if (timeseriesOption.future) {
@@ -71,7 +67,7 @@ function TimeSeriesExplorer({
 
       filteredDates = filteredDates.filter((date) => date >= today);
 
-      if (cutOffDate != today) {
+      if (cutOffDate !== today) {
         filteredDates = filteredDates.filter((date) => date <= cutOffDate);
       }
     }

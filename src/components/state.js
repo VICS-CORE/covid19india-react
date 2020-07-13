@@ -24,10 +24,6 @@ const TimeSeriesExplorer = lazy(() =>
   import('./timeseriesexplorer' /* webpackChunkName: "TimeSeriesExplorer" */)
 );
 
-const MapExplorer = lazy(() =>
-  import('./mapexplorer' /* webpackChunkName: "MapExplorer" */)
-);
-
 const Footer = lazy(() => import('./footer' /* webpackChunkName: "Footer" */));
 
 const Minigraph = lazy(() =>
@@ -170,20 +166,6 @@ function State(props) {
 
           <Level data={data[stateCode]} />
           <Minigraph timeseries={timeseries[stateCode]} {...{stateCode}} />
-
-          <Suspense fallback={<div />}>
-            <MapExplorer
-              isCountryLoaded={false}
-              {...{
-                stateCode,
-                data,
-                regionHighlighted,
-                setRegionHighlighted,
-                mapStatistic,
-                setMapStatistic,
-              }}
-            />
-          </Suspense>
 
           <StateMeta
             {...{

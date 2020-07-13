@@ -5381,3 +5381,11 @@ footer {
     transform: translateY(20px);
   }
 }
+
+div#prediction-control {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  font-family: 'Lucida Grande';
+}
