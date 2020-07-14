@@ -96,7 +96,7 @@ import 'font-awesome/css/font-awesome.min.css';
     this.predictionControl = H.createElement(
       'div',
       {
-        id: 'prediction-control'
+        id: 'prediction-control',
       },
       null,
       this.chart.renderTo,
@@ -110,7 +110,6 @@ import 'font-awesome/css/font-awesome.min.css';
         name: 'prediction-control',
         id: 'no-prediction',
         value: 0,
-        checked: true
       },
       null,
       this.predictionControl,
@@ -120,7 +119,7 @@ import 'font-awesome/css/font-awesome.min.css';
     this.noPredictionLabel = H.createElement(
       'label',
       {
-        for: 'no-prediction'
+        for: 'no-prediction',
       },
       null,
       this.predictionControl,
@@ -134,7 +133,7 @@ import 'font-awesome/css/font-awesome.min.css';
         type: 'radio',
         name: 'prediction-control',
         id: 'short-term-prediction',
-        value: 20
+        value: 20,
       },
       null,
       this.predictionControl,
@@ -144,7 +143,7 @@ import 'font-awesome/css/font-awesome.min.css';
     this.shortTermPredictionLabel = H.createElement(
       'label',
       {
-        for: 'short-term-prediction'
+        for: 'short-term-prediction',
       },
       null,
       this.predictionControl,
@@ -158,7 +157,8 @@ import 'font-awesome/css/font-awesome.min.css';
         type: 'radio',
         name: 'prediction-control',
         id: 'long-term-prediction',
-        value: 'Infinite'
+        value: 'Infinite',
+        checked: true,
       },
       null,
       this.predictionControl,
@@ -168,7 +168,7 @@ import 'font-awesome/css/font-awesome.min.css';
     this.longTermPredictionLabel = H.createElement(
       'label',
       {
-        for: 'long-term-prediction'
+        for: 'long-term-prediction',
       },
       null,
       this.predictionControl,
@@ -211,9 +211,9 @@ import 'font-awesome/css/font-awesome.min.css';
     Highcharts.addEvent(this.playRange, 'input', function () {
       motion.updateChart(this.value);
     });
-    Highcharts.addEvent(this.predictionControl, 'change', function(){
+    Highcharts.addEvent(this.predictionControl, 'change', function () {
       motion.updateChart(motion.playRange.value);
-    })
+    });
 
     // Request focus to the controls when clicking on controls div
     Highcharts.addEvent(this.playControls, 'click', function () {
@@ -322,21 +322,32 @@ import 'font-awesome/css/font-awesome.min.css';
     let series;
     let data;
     const roundedInput = this.options.labels[this.round(inputValue)];
-    const predictionControl = filter([this.noPrediction, this.shortTermPrediction, this.longTermPrediction], 'checked')[0].value;
-    if (this.currentAxisValue !== roundedInput || this.predictionControl.value !== predictionControl) {
+    const predictionControl = filter(
+      [this.noPrediction, this.shortTermPrediction, this.longTermPrediction],
+      'checked'
+    )[0].value;
+    if (
+      this.currentAxisValue !== roundedInput ||
+      this.predictionControl.value !== predictionControl
+    ) {
       this.currentAxisValue = roundedInput;
       this.predictionControl.value = predictionControl;
       this.chart.options.motion.startIndex = roundedInput;
       for (seriesKey in this.dataSeries) {
         if (this.dataSeries.hasOwnProperty(seriesKey)) {
           series = this.dataSeries[seriesKey];
-          const fullData = this.chart.options.chart.fullData && this.chart.options.chart.fullData[roundedInput].TT;
+          const fullData =
+            this.chart.options.chart.fullData &&
+            this.chart.options.chart.fullData[roundedInput].TT;
           if (isEmpty(fullData)) return;
-          if(seriesKey === '0'){
+          if (seriesKey === '0') {
             data = updateConfirmedCases(fullData, roundedInput);
-          }
-          else if(seriesKey === '1'){
-            data = updatePredictedCases(fullData, roundedInput, predictionControl);
+          } else if (seriesKey === '1') {
+            data = updatePredictedCases(
+              fullData,
+              roundedInput,
+              predictionControl
+            );
           }
           series.setData(data);
         }
@@ -347,24 +358,39 @@ import 'font-awesome/css/font-awesome.min.css';
     }
   };
 
-  function updateYAxis(predictionControl){
-    const max = isNaN(predictionControl) ? 175000 : 40000
-    H.each(H.charts, function(p, i) {p.yAxis[0].update({
-      max: max
-    })});
+  function updateYAxis(predictionControl) {
+    const max = isNaN(predictionControl) ? 175000 : 40000;
+    H.each(H.charts, function (p, i) {
+      p.yAxis[0].update({
+        max: max,
+      });
+    });
   }
 
-  function updateConfirmedCases(fullData, selectedDate){
-    return transform(fullData, function(res, v, k) {
-      if(k<=selectedDate){res.push({x: new Date(k), y: v.c})};
-    }, [])    
+  function updateConfirmedCases(fullData, selectedDate) {
+    return transform(
+      fullData,
+      function (res, v, k) {
+        if (k <= selectedDate) {
+          res.push({x: new Date(k), y: v.c});
+        }
+      },
+      []
+    );
   }
 
-  function updatePredictedCases(fullData, selectedDate, predictionControl){
-    return transform(fullData, function(res, v, k) {
-      if(!isNaN(predictionControl) && res.length >= predictionControl) return;
-      if(k>=selectedDate){res.push({x: new Date(k), y: v.c})};
-    }, []);
+  function updatePredictedCases(fullData, selectedDate, predictionControl) {
+    return transform(
+      fullData,
+      function (res, v, k) {
+        if (!isNaN(predictionControl) && res.length >= predictionControl)
+          return;
+        if (k >= selectedDate) {
+          res.push({x: new Date(k), y: v.c});
+        }
+      },
+      []
+    );
   }
 
   // Moves output value to data point

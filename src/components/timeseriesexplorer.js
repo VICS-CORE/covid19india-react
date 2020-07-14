@@ -9,7 +9,6 @@ import {getIndiaTodayISO, parseIndiaDate} from '../utils/commonfunctions';
 
 import 'intersection-observer';
 
-import {PinIcon} from '@primer/octicons-v2-react';
 import classnames from 'classnames';
 import {formatISO, add, sub} from 'date-fns';
 import equal from 'fast-deep-equal';
@@ -98,8 +97,7 @@ function TimeSeriesExplorer({
           onClick={() => {
             setAnchor(anchor === 'timeseries' ? null : 'timeseries');
           }}
-        >
-        </div>
+        ></div>
 
         <h1>{t('Trends')}</h1>
         <div className="tabs">
