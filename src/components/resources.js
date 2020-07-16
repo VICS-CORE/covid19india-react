@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
-import {formatDistance, format} from 'date-fns';
+import {formatDistance} from 'date-fns';
 import {formatDate, formatDateAbsolute} from '../utils/common-functions';
 import {RESOURCES_META} from '../constants';
 import {featureFlags} from '../conf/settings';
@@ -20,7 +20,7 @@ function Resources(props) {
   const [timeseriesMode, setTimeseriesMode] = useState(false);
   const [timeseriesLogMode, setTimeseriesLogMode] = useState(false);
   const [regionHighlighted, setRegionHighlighted] = useState(undefined);
-  const date = format(new Date(), 'yyyy-MM-dd');
+  const date = '2020-05-30';
   const [dataURL, setDataURL] = useState('https://demo6934508.mockable.io/med_resources_timeline.json');
   
   useEffect(() => {
