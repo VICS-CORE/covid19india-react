@@ -49,7 +49,7 @@ function Footer(props) {
         </a>
       </div>
 
-        <h5>Built on covid19india.org</h5>
+      <h5>Built on covid19india.org</h5>
     </footer>
   );
 }

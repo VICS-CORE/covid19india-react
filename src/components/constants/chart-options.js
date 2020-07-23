@@ -1,4 +1,5 @@
 import {formatNumber} from '../../utils/commonfunctions';
+
 import {format} from 'date-fns';
 
 export const chartOptions = {
@@ -8,7 +9,6 @@ export const chartOptions = {
   chart: {
     type: 'spline',
     height: 600,
-    blah: 'bleh'
   },
   series: [
     {
@@ -23,18 +23,18 @@ export const chartOptions = {
       name: 'Predicted Cases',
       dataGrouping: {
         forced: true,
-        units: [['month', [1]]]
+        units: [['month', [1]]],
       },
-      color: '#7cb5ec'
-    }
+      color: '#7cb5ec',
+    },
   ],
-  legend:{
+  legend: {
     align: 'right',
     verticalAlign: 'top',
     layout: 'vertical',
     x: -10,
     y: 50,
-    floating: true
+    floating: true,
   },
   tooltip: {
     formatter: function () {

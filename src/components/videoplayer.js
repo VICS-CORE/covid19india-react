@@ -3,35 +3,54 @@ import React, {useState, useEffect} from 'react';
 import Highcharts from 'highcharts/highstock';
 import HighchartsReact from 'highcharts-react-official';
 import axios from 'axios';
-import plugin from './motion.js';
 import {Helmet} from 'react-helmet';
 import Footer from './footer';
-import {chartOptions} from './constants/chart-options'
+import {chartOptions} from './constants/chart-options';
+import queryString from 'query-string';
+import './motion.js';
 
 function VideoPlayer() {
   const [options, setOptions] = useState({});
+  const queryStringParams = queryString.parse(window.location.search);
+  const model = queryStringParams && queryStringParams.model ? queryStringParams.model : '1.1740'
 
   useEffect(() => {
-    axios.get('https://vics-core.github.io/covid-api/vp/1.1740.json')
-      .then(response => {
+    axios
+      .get(`https://vics-core.github.io/covid-api/vp/${model}.json`)
+      .then((response) => {
         const data = response.data;
         const labels = keys(data);
-        const highlightedDate = labels[labels.length - 1]
+        const highlightedDate = labels[labels.length - 1];
         chartOptions.motion.labels = labels;
         chartOptions.chart.fullData = data;
-        chartOptions.series[0].data = (transform(data[highlightedDate].TT, function(res, v, k) {
-          if(k<=highlightedDate){res.push({x: new Date(k), y: v.c})};
-        }, []));
+        chartOptions.series[0].data = transform(
+          data[highlightedDate].TT,
+          function (res, v, k) {
+            if (k <= highlightedDate) {
+              res.push({x: new Date(k), y: v.c});
+            }
+          },
+          []
+        );
         updatePredictedCases(data, highlightedDate);
         setOptions(chartOptions);
-    });
-  },[]);
+      })
+      .catch((error) => {
+        alert(`The model ${model} does not exist.`)
+      });
+  }, []);
 
-  function updatePredictedCases(data,highlightedDate,){
-    if(data[highlightedDate]){
-      chartOptions.series[1].data = (transform(data[highlightedDate].TT, function(res, v, k) {
-        if(k>=highlightedDate){res.push({x: new Date(k), y: v.c})};
-      }, []));
+  function updatePredictedCases(data, highlightedDate) {
+    if (data[highlightedDate]) {
+      chartOptions.series[1].data = transform(
+        data[highlightedDate].TT,
+        function (res, v, k) {
+          if (k >= highlightedDate) {
+            res.push({x: new Date(k), y: v.c});
+          }
+        },
+        []
+      );
     }
   }
 
