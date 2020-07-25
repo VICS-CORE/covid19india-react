@@ -24,14 +24,10 @@ import 'font-awesome/css/font-awesome.min.css';
     this.chart = chart;
     this.paused = true;
     this.options = H.merge(this.defaultOptions, this.chart.options.motion);
-    this.dataSeries = [];
     this.dataLength = 0;
     this.options.startIndex = 0;
     motion.options.series = H.splat(motion.options.series);
     motion.dataLength = motion.options.labels.length;
-    Highcharts.each(this.chart.series, function (series, index) {
-      motion.dataSeries[index] = series;
-    });
 
     // Play-controls HTML-div
     this.playControls = H.createElement(
@@ -40,7 +36,7 @@ import 'font-awesome/css/font-awesome.min.css';
         id: 'play-controls',
       },
       null,
-      this.chart.renderTo,
+      this.chart.renderTo.parentElement.parentElement,
       null
     );
 
@@ -99,7 +95,7 @@ import 'font-awesome/css/font-awesome.min.css';
         id: 'prediction-control',
       },
       null,
-      this.chart.renderTo,
+      this.chart.renderTo.parentElement.parentElement,
       null
     );
 
@@ -318,14 +314,13 @@ import 'font-awesome/css/font-awesome.min.css';
 
   // Updates chart data and redraws the chart
   Motion.prototype.updateChart = function (inputValue) {
-    let seriesKey;
-    let series;
-    let data;
     const roundedInput = this.options.labels[this.round(inputValue)];
-    const predictionControl = filter(
-      [this.noPrediction, this.shortTermPrediction, this.longTermPrediction],
-      'checked'
-    )[0].value;
+    let predictionControl =
+      filter(
+        [this.noPrediction, this.shortTermPrediction, this.longTermPrediction],
+        'checked'
+      )[0] || this.longTermPrediction;
+    predictionControl = predictionControl.value;
     if (
       this.currentAxisValue !== roundedInput ||
       this.predictionControl.value !== predictionControl
@@ -333,30 +328,30 @@ import 'font-awesome/css/font-awesome.min.css';
       this.currentAxisValue = roundedInput;
       this.predictionControl.value = predictionControl;
       this.chart.options.motion.startIndex = roundedInput;
-      for (seriesKey in this.dataSeries) {
-        if (this.dataSeries.hasOwnProperty(seriesKey)) {
-          series = this.dataSeries[seriesKey];
-          const fullData =
-            this.chart.options.chart.fullData &&
-            this.chart.options.chart.fullData[roundedInput].TT;
-          if (isEmpty(fullData)) return;
-          if (seriesKey === '0') {
-            data = updateConfirmedCases(fullData, roundedInput);
-          } else if (seriesKey === '1') {
-            data = updatePredictedCases(
-              fullData,
-              roundedInput,
-              predictionControl
-            );
-          }
-          series.setData(data);
-        }
-      }
-      updateYAxis(predictionControl);
-      this.chart.redraw();
+      H.each(H.charts, function (chart, index) {
+        updateChartSeries(chart, roundedInput, predictionControl);
+        updateYAxis(predictionControl);
+        chart.redraw();
+      });
       this.attractToStep();
     }
   };
+
+  function updateChartSeries(chart, roundedInput, predictionControl) {
+    let data;
+    H.each(chart.series, function (series, i) {
+      const fullData =
+        chart.options.chart.fullData &&
+        chart.options.chart.fullData[roundedInput].TT;
+      if (isEmpty(fullData)) return;
+      if (i === 0) {
+        data = updateConfirmedCases(fullData, roundedInput);
+      } else if (i === 1) {
+        data = updatePredictedCases(fullData, roundedInput, predictionControl);
+      }
+      series.setData(data);
+    });
+  }
 
   function updateYAxis(predictionControl) {
     const max = isNaN(predictionControl) ? 175000 : 40000;
@@ -415,7 +410,11 @@ import 'font-awesome/css/font-awesome.min.css';
   // Initiates motion automatically if motion options object exists and
   // is not disabled
   H.Chart.prototype.callbacks.push(function (chart) {
-    if (chart.options.motion && chart.options.motion.enabled) {
+    if (
+      chart.options.motion &&
+      chart.options.motion.enabled &&
+      H.charts.length === 1
+    ) {
       chart.motion = new Motion(chart);
     }
   });
