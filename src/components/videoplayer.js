@@ -4,7 +4,7 @@ import Footer from './footer';
 import axios from 'axios';
 import HighchartsReact from 'highcharts-react-official';
 import Highcharts from 'highcharts/highstock';
-import {keys, transform, isEmpty} from 'lodash';
+import {keys, transform, intersection, cloneDeep} from 'lodash';
 import queryString from 'query-string';
 import React, {useState, useEffect} from 'react';
 import {Helmet} from 'react-helmet';
@@ -12,12 +12,8 @@ import {Helmet} from 'react-helmet';
 import './motion.js';
 
 function VideoPlayer() {
-  const [options, setOptions] = useState({});
+  const [options, setOptions] = useState([]);
   const queryStringParams = queryString.parse(window.location.search);
-  const model =
-    queryStringParams && queryStringParams.model
-      ? queryStringParams.model
-      : '1.1740';
   const models =
     queryStringParams && queryStringParams.model
       ? queryStringParams.model.split(',')
@@ -30,34 +26,40 @@ function VideoPlayer() {
         axios.get(`https://vics-core.github.io/covid-api/vp/${model}.json`)
       );
     }
-    axios
-      .all(requests)
-      .then((response) => {
-        const data = response[0].data;
-        const labels = keys(data);
-        const highlightedDate = labels[labels.length - 1];
-        chartOptions.motion.labels = labels;
-        chartOptions.chart.fullData = data;
-        chartOptions.series[0].data = transform(
-          data[highlightedDate].TT,
-          function (res, v, k) {
-            if (k <= highlightedDate) {
-              res.push({x: new Date(k), y: v.c});
-            }
-          },
-          []
-        );
-        updatePredictedCases(data, highlightedDate);
-        setOptions(chartOptions);
-      })
-      .catch((error) => {
-        alert(`The model ${model} does not exist.`);
-      });
-  }, [model, models]);
 
-  function updatePredictedCases(data, highlightedDate) {
+    axios.all(requests).then((responses) => {
+      let ops = [];
+      const labels = intersection(...responses.map((r) => keys(r.data)));
+      const highlightedDate = labels[labels.length - 1];
+      responses.map((response, index) => {
+        const option = cloneDeep(chartOptions);
+        const data = response.data;
+        option.chart.fullData = data;
+        option.motion.labels = labels;
+        updateConfirmedCases(option, highlightedDate);
+        updatePredictedCases(option, highlightedDate);
+        ops = ops.concat(option);
+      });
+      setOptions(ops);
+    });
+  }, [models]);
+
+  function updateConfirmedCases(option, highlightedDate) {
+    option.series[0].data = transform(
+      option.chart.fullData[highlightedDate].TT,
+      function (res, v, k) {
+        if (k <= highlightedDate) {
+          res.push({x: new Date(k), y: v.c});
+        }
+      },
+      []
+    );
+  }
+
+  function updatePredictedCases(option, highlightedDate) {
+    const data = option.chart.fullData;
     if (data[highlightedDate]) {
-      chartOptions.series[1].data = transform(
+      option.series[1].data = transform(
         data[highlightedDate].TT,
         function (res, v, k) {
           if (k >= highlightedDate) {
@@ -84,16 +86,14 @@ function VideoPlayer() {
         <h1>Video Player</h1>
       </div>
       <div className="models">
-        {models.map((model, index) => {
+        {options.map((option, index) => {
           return (
-            !isEmpty(options) && (
-              <div className="model" key={index}>
-                <HighchartsReact
-                  options={options}
-                  highcharts={Highcharts}
-                ></HighchartsReact>
-              </div>
-            )
+            <div className="model" key={index}>
+              <HighchartsReact
+                options={option}
+                highcharts={Highcharts}
+              ></HighchartsReact>
+            </div>
           );
         })}
       </div>

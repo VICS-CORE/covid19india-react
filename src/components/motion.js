@@ -27,7 +27,8 @@ import 'font-awesome/css/font-awesome.min.css';
     this.dataLength = 0;
     this.options.startIndex = 0;
     motion.options.series = H.splat(motion.options.series);
-    motion.dataLength = motion.options.labels.length;
+    motion.dataLength =
+      motion.options && motion.options.labels && motion.options.labels.length;
 
     // Play-controls HTML-div
     this.playControls = H.createElement(
@@ -83,6 +84,7 @@ import 'font-awesome/css/font-awesome.min.css';
       this.playControls,
       null
     );
+
     this.playOutput.innerHTML = format(
       new Date(this.options.labels[this.round(this.playRange.value)]),
       'dd MMM, yyyy'
@@ -345,9 +347,11 @@ import 'font-awesome/css/font-awesome.min.css';
         chart.options.chart.fullData[roundedInput].TT;
       if (isEmpty(fullData)) return;
       if (i === 0) {
-        data = updateConfirmedCases(fullData, roundedInput);
+        data = Object.assign(updateConfirmedCases(fullData, roundedInput));
       } else if (i === 1) {
-        data = updatePredictedCases(fullData, roundedInput, predictionControl);
+        data = Object.assign(
+          updatePredictedCases(fullData, roundedInput, predictionControl)
+        );
       }
       series.setData(data);
     });

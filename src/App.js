@@ -1,11 +1,12 @@
 import './App.scss';
-import Navbar from './components/navbar';
 import About from './components/about';
 import Blog from './components/blog';
-
+import Navbar from './components/navbar';
 import ScrollToTop from './utils/ScrollToTop';
 
 import React, {lazy, useState, Suspense} from 'react';
+import ReactDOM from 'react-dom';
+import ReactGA from 'react-ga';
 import {Helmet} from 'react-helmet';
 import {
   BrowserRouter as Router,
@@ -16,9 +17,6 @@ import {
 } from 'react-router-dom';
 import useDarkMode from 'use-dark-mode';
 
-import ReactGA from 'react-ga';
-import ReactDOM from 'react-dom';
-
 const Home = lazy(() =>
   import('./components/home' /* webpackChunkName: "Home" */)
 );
@@ -26,11 +24,11 @@ const State = lazy(() =>
   import('./components/state' /* webpackChunkName: "State" */)
 );
 
-const LanguageSwitcher = lazy(() =>
-  import(
-    './components/languageswitcher' /* webpackChunkName: "LanguageSwitcher" */
-  )
-);
+// const LanguageSwitcher = lazy(() =>
+//   import(
+//     './components/languageswitcher' /* webpackChunkName: "LanguageSwitcher" */
+//   )
+// );
 
 const VideoPlayer = lazy(
   () => import('./components/videoplayer') /* webpackChunkName: "VideoPlayer" */
@@ -50,7 +48,7 @@ ReactGA.initialize('UA-165213678-1');
 function App() {
   const darkMode = useDarkMode(true);
   const [showLanguageSwitcher, setShowLanguageSwitcher] = useState(false);
-  let location = useLocation();
+  const location = useLocation();
 
   React.useEffect(() => {
     ReactGA.pageview(location.pathname + location.search);
