@@ -358,7 +358,7 @@ import 'font-awesome/css/font-awesome.min.css';
   }
 
   function updateYAxis(predictionControl) {
-    const max = isNaN(predictionControl) ? 175000 : 40000;
+    const max = isNaN(predictionControl) ? 175000 : 80000;
     H.each(H.charts, function (p, i) {
       p.yAxis[0].update({
         max: max,
