@@ -37,26 +37,76 @@ function merge(past, future, today) {
   const merged = {};
   for (const st in past) {
     merged[st] = {};
-    for (const dt in past[st]) {
-      if (dt === today) continue;
-      merged[st][dt] = {};
-      merged[st][dt]['delta'] = past[st][dt]['delta'];
-      merged[st][dt]['total'] = past[st][dt]['total'];
-    }
-  }
-  for (const st in future) {
-    for (const dt in future[st]) {
-      if (dt < today) continue;
-      merged[st][dt] = {};
-      const dt_minus_1 = yesterday(dt);
-      merged[st][dt]['delta'] = future[st][dt]['delta'];
-      merged[st][dt]['total'] = {};
-      for (const k in merged[st][dt]['delta']) {
-        merged[st][dt]['total'][k] =
-          merged[st][dt_minus_1]['total'][k] + merged[st][dt]['delta'][k];
+    if (st === 'TT') {
+      for (const dt in past[st]) {
+        if (dt === today) continue;
+        merged[st][dt] = {};
+        merged[st][dt]['delta'] = past[st][dt]['delta'];
+
+        merged[st][dt]['total'] = past[st][dt]['total']
+          ? past[st][dt]['total']
+          : {active: 0, confirmed: 0, deceased: 0, recovered: 0};
+      }
+    } else {
+      for (const district in past[st]) {
+        merged[st][district] = {};
+        // console.log('DISTRICT: ', district, past[st][district]);
+        for (const dt in past[st][district]) {
+          if (dt === today) continue;
+          merged[st][district][dt] = {};
+          merged[st][district][dt]['delta'] = past[st][district][dt]['delta'];
+
+          if (past[st][district][dt]['total']) {
+            merged[st][district][dt]['total'] = past[st][district][dt]['total'];
+          } else {
+            console.log('NOT PRESENT');
+            merged[st][district][dt]['total'] = {
+              active: 0,
+              confirmed: 0,
+              deceased: 0,
+              recovered: 0,
+            };
+          }
+        }
       }
     }
   }
+  console.log('PAST MERGED DATA: ', merged);
+  for (const st in future) {
+    if (st === 'TT') {
+      for (const dt in future[st]) {
+        if (dt < today) continue;
+        // console.log(future[st][district]);
+        merged[st][dt] = {};
+        const dt_minus_1 = yesterday(dt);
+        merged[st][dt]['delta'] = future[st][dt]['delta'];
+        merged[st][dt]['total'] = {};
+        for (const k in merged[st][dt]['delta']) {
+          merged[st][dt]['total'][k] =
+            merged[st][dt_minus_1]['total'][k] + merged[st][dt]['delta'][k];
+        }
+      }
+    } else {
+      for (const district in future[st]) {
+        for (const dt in future[st][district]) {
+          if (dt < today) continue;
+
+          merged[st][district][dt] = {};
+          const dt_minus_1 = yesterday(dt);
+          // console.log('DELTA: ', merged[st][district][dt]['delta']);
+          merged[st][district][dt]['delta'] = future[st][district][dt]['delta'];
+          merged[st][district][dt]['total'] = {};
+
+          for (const k in merged[st][district][dt]['delta']) {
+            merged[st][district][dt]['total'][k] =
+              merged[st][district][dt_minus_1]['total'][k] +
+              merged[st][district][dt]['delta'][k];
+          }
+        }
+      }
+    }
+  }
+  console.log('MERGED: ', merged);
   return merged;
 }
 
@@ -75,10 +125,10 @@ function Home(props) {
 
   useMemo(() => {
     const pastTimeseries = axios.get(
-      'https://api.covid19india.org/v3/min/timeseries.min.json'
+      'https://raw.githubusercontent.com/coffeeDev98/covid19india-react/predictions/predictions_districts.json'
     );
     const futureTimeseries = axios.get(
-      'https://vics-core.github.io/covid-api/predictions.json'
+      'https://raw.githubusercontent.com/coffeeDev98/covid19india-react/predictions/predictions_districts.json'
     );
     axios.all([pastTimeseries, futureTimeseries]).then(
       axios.spread((...responses) => {
@@ -98,8 +148,17 @@ function Home(props) {
   useMemo(() => {
     let ret = {};
     for (const st in timeseries) {
-      if (timeseries.hasOwnProperty(st)) {
-        ret[st] = timeseries[st][date];
+      ret[st] = {};
+      if (st === 'TT') {
+        if (timeseries.hasOwnProperty(st)) {
+          ret[st] = timeseries[st][date];
+        }
+      } else {
+        for (const district in timeseries[st]) {
+          if (timeseries.hasOwnProperty(st)) {
+            ret[st][district] = timeseries[st][district][date];
+          }
+        }
       }
     }
     setData(ret);

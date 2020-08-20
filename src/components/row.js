@@ -27,8 +27,17 @@ import {createBreakpoint, useLocalStorage} from 'react-use';
 const useBreakpoint = createBreakpoint({S: 768});
 
 function PureCell({statistic, data}) {
-  const total = getStatistic(data, 'total', statistic);
-  const delta = getStatistic(data, 'delta', statistic);
+  // console.log('DATA: ', data['TT']);
+  const total = getStatistic(
+    data.total ? data : data['TT'],
+    'total',
+    statistic
+  );
+  const delta = getStatistic(
+    data.total ? data : data['TT'],
+    'delta',
+    statistic
+  );
 
   const spring = useSpring(
     {
@@ -197,26 +206,10 @@ function Row({stateCode, data, regionHighlighted, setRegionHighlighted}) {
     (districtNameA, districtNameB) => {
       if (sortData.sortColumn !== 'districtName') {
         return sortData.isAscending
-          ? getStatistic(
-              data.districts[districtNameA],
-              'total',
-              sortData.sortColumn
-            ) -
-              getStatistic(
-                data.districts[districtNameB],
-                'total',
-                sortData.sortColumn
-              )
-          : getStatistic(
-              data.districts[districtNameB],
-              'total',
-              sortData.sortColumn
-            ) -
-              getStatistic(
-                data.districts[districtNameA],
-                'total',
-                sortData.sortColumn
-              );
+          ? getStatistic(data[districtNameA], 'total', sortData.sortColumn) -
+              getStatistic(data[districtNameB], 'total', sortData.sortColumn)
+          : getStatistic(data[districtNameB], 'total', sortData.sortColumn) -
+              getStatistic(data[districtNameA], 'total', sortData.sortColumn);
       } else {
         return sortData.isAscending
           ? districtNameA.localeCompare(districtNameB)
@@ -238,7 +231,7 @@ function Row({stateCode, data, regionHighlighted, setRegionHighlighted}) {
   }, [regionHighlighted, setRegionHighlighted, stateCode]);
 
   const _setShowDistrict = useCallback(() => {
-    if (data.districts) {
+    if (data) {
       setShowDistricts(!showDistricts);
     }
   }, [showDistricts, data]);
@@ -330,7 +323,7 @@ function Row({stateCode, data, regionHighlighted, setRegionHighlighted}) {
       )}
 
       {showDistricts &&
-        Object.keys(data.districts)
+        Object.keys(data)
           .sort((a, b) => sortingFunction(a, b))
           .map((districtName) => (
             <DistrictRow
@@ -341,7 +334,7 @@ function Row({stateCode, data, regionHighlighted, setRegionHighlighted}) {
                 setRegionHighlighted,
                 stateCode,
               }}
-              data={data.districts[districtName]}
+              data={data[districtName]}
             />
           ))}
 
