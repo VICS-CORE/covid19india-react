@@ -42,10 +42,11 @@ function merge(past, future, today) {
         if (dt === today) continue;
         merged[st][dt] = {};
         merged[st][dt]['delta'] = past[st][dt]['delta'];
-
-        merged[st][dt]['total'] = past[st][dt]['total']
-          ? past[st][dt]['total']
-          : {active: 0, confirmed: 0, deceased: 0, recovered: 0};
+        console.log('TOTAL: ', past[st][dt]['total']);
+        merged[st][dt]['total'] =
+          past[st][dt]['total'] === {}
+            ? past[st][dt]['total']
+            : {active: 0, confirmed: 0, deceased: 0, recovered: 0};
       }
     } else {
       for (const district in past[st]) {
@@ -56,10 +57,10 @@ function merge(past, future, today) {
           merged[st][district][dt] = {};
           merged[st][district][dt]['delta'] = past[st][district][dt]['delta'];
 
-          if (past[st][district][dt]['total']) {
+          if (past[st][district][dt]['total'] === {}) {
             merged[st][district][dt]['total'] = past[st][district][dt]['total'];
           } else {
-            console.log('NOT PRESENT');
+            // console.log('NOT PRESENT');
             merged[st][district][dt]['total'] = {
               active: 0,
               confirmed: 0,
