@@ -100,11 +100,11 @@ function merge(past, future, today) {
           merged[st][district][dt]['total'] = {};
 
           for (const k in merged[st][district][dt]['delta']) {
-            console.log(
-              'DISTRICT: ',
-              district,
-              merged[st][district][dt_minus_1]
-            );
+            // console.log(
+            //   'DISTRICT: ',
+            //   district,
+            //   merged[st][district][dt_minus_1]
+            // );
             merged[st][district][dt]['total'][k] =
               merged[st][district][dt_minus_1]['total'][k] +
               merged[st][district][dt]['delta'][k];
@@ -133,7 +133,7 @@ function Home(props) {
   const convertStructure = (timeseries) => {
     let ALL_STATES = Object.keys(timeseries['2020-07-01']);
     ALL_STATES = ALL_STATES.filter((STATE) => STATE !== 'UN');
-    let ALL_DISTTS = {};
+    const ALL_DISTTS = {};
     for (const st in ALL_STATES) {
       const state = ALL_STATES[st];
       if (state == 'TT') continue;
@@ -141,7 +141,7 @@ function Home(props) {
         timeseries['2020-07-01'][state]['districts']
       );
     }
-    let ALL_DATA = {};
+    const ALL_DATA = {};
 
     for (const dt in timeseries) {
       // console.log('DATE: ', dt);
@@ -149,25 +149,25 @@ function Home(props) {
         const state = ALL_STATES[st];
 
         if (!ALL_DATA[state]) ALL_DATA[state] = {};
-        let stateObj = timeseries[dt][state] || {};
+        const stateObj = timeseries[dt][state] || {};
         console.log('STATE_OBJ: ', state, stateObj);
 
-        let deltac = stateObj['delta']
+        const deltac = stateObj['delta']
           ? stateObj['delta']['confirmed']
             ? stateObj['delta']['confirmed']
             : 0
           : 0;
-        let deltad = stateObj['delta']
+        const deltad = stateObj['delta']
           ? stateObj['delta']['deceased']
             ? stateObj['delta']['deceased']
             : 0
           : 0;
-        let deltar = stateObj['delta']
+        const deltar = stateObj['delta']
           ? stateObj['delta']['recovered']
             ? stateObj['delta']['recovered']
             : 0
           : 0;
-        let deltat = stateObj['delta']
+        const deltat = stateObj['delta']
           ? stateObj['delta']['tested']
             ? stateObj['delta']['tested']
             : 0
@@ -182,22 +182,22 @@ function Home(props) {
           tested: deltat,
         };
 
-        let totalc = stateObj['total']
+        const totalc = stateObj['total']
           ? stateObj['total']['confirmed']
             ? stateObj['total']['confirmed']
             : 0
           : 0;
-        let totald = stateObj['total']
+        const totald = stateObj['total']
           ? stateObj['total']['deceased']
             ? stateObj['total']['deceased']
             : 0
           : 0;
-        let totalr = stateObj['total']
+        const totalr = stateObj['total']
           ? stateObj['total']['recovered']
             ? stateObj['total']['recovered']
             : 0
           : 0;
-        let totalt = stateObj['total']
+        const totalt = stateObj['total']
           ? stateObj['total']['tested']
             ? stateObj['total']['tested']
             : 0
@@ -240,28 +240,28 @@ function Home(props) {
             ALL_DATA[state][district][dt] = {};
           }
 
-          let districtObj = stateObj['districts']
+          const districtObj = stateObj['districts']
             ? stateObj['districts'][district]
               ? stateObj['districts'][district]
               : 0
             : {};
 
-          let deltac = districtObj['delta']
+          const deltac = districtObj['delta']
             ? districtObj['delta']['confirmed']
               ? districtObj['delta']['confirmed']
               : 0
             : 0;
-          let deltad = districtObj['delta']
+          const deltad = districtObj['delta']
             ? districtObj['delta']['deceased']
               ? districtObj['delta']['deceased']
               : 0
             : 0;
-          let deltar = districtObj['delta']
+          const deltar = districtObj['delta']
             ? districtObj['delta']['recovered']
               ? districtObj['delta']['recovered']
               : 0
             : 0;
-          let deltat = districtObj['delta']
+          const deltat = districtObj['delta']
             ? districtObj['delta']['tested']
               ? districtObj['delta']['tested']
               : 0
@@ -275,22 +275,22 @@ function Home(props) {
             tested: deltat,
           };
 
-          let totalc = districtObj['total']
+          const totalc = districtObj['total']
             ? districtObj['total']['confirmed']
               ? districtObj['total']['confirmed']
               : 0
             : 0;
-          let totald = districtObj['total']
+          const totald = districtObj['total']
             ? districtObj['total']['deceased']
               ? districtObj['total']['deceased']
               : 0
             : 0;
-          let totalr = districtObj['total']
+          const totalr = districtObj['total']
             ? districtObj['total']['recovered']
               ? districtObj['total']['recovered']
               : 0
             : 0;
-          let totalt = districtObj['total']
+          const totalt = districtObj['total']
             ? districtObj['total']['tested']
               ? districtObj['total']['tested']
               : 0
@@ -337,7 +337,7 @@ function Home(props) {
   }, [today]);
 
   useMemo(() => {
-    let ret = {};
+    const ret = {};
     for (const st in timeseries) {
       ret[st] = {};
       if (st === 'TT') {
