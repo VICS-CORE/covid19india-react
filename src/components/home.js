@@ -44,7 +44,7 @@ function merge(past, future, today) {
         merged[st][dt]['delta'] = past[st][dt]['delta'];
         console.log('TOTAL: ', past[st][dt]['total']);
         merged[st][dt]['total'] =
-          past[st][dt]['total'] === {}
+          past[st][dt]['total'] !== {}
             ? past[st][dt]['total']
             : {active: 0, confirmed: 0, deceased: 0, recovered: 0};
       }
@@ -57,7 +57,13 @@ function merge(past, future, today) {
           merged[st][district][dt] = {};
           merged[st][district][dt]['delta'] = past[st][district][dt]['delta'];
 
-          if (past[st][district][dt]['total'] === {}) {
+          console.log(
+            'PAST DISTRICT: ',
+            district,
+            past[st][district][dt]['total']
+          );
+
+          if (past[st][district][dt]['total'] !== {}) {
             merged[st][district][dt]['total'] = past[st][district][dt]['total'];
           } else {
             // console.log('NOT PRESENT');
@@ -103,8 +109,9 @@ function merge(past, future, today) {
             // console.log(
             //   'DISTRICT: ',
             //   district,
-            //   merged[st][district][dt_minus_1]
+            //   merged[st][district][dt_minus_1]['total']
             // );
+
             merged[st][district][dt]['total'][k] =
               merged[st][district][dt_minus_1]['total'][k] +
               merged[st][district][dt]['delta'][k];
@@ -150,7 +157,7 @@ function Home(props) {
 
         if (!ALL_DATA[state]) ALL_DATA[state] = {};
         const stateObj = timeseries[dt][state] || {};
-        console.log('STATE_OBJ: ', state, stateObj);
+        // console.log('STATE_OBJ: ', state, stateObj);
 
         const deltac = stateObj['delta']
           ? stateObj['delta']['confirmed']
@@ -174,7 +181,8 @@ function Home(props) {
           : 0;
 
         ALL_DATA[state]['TT'] = {};
-        ALL_DATA[state]['TT']['delta'] = {
+        ALL_DATA[state]['TT'][dt] = {};
+        ALL_DATA[state]['TT'][dt]['delta'] = {
           confirmed: deltac,
           active: deltac - deltar,
           deceased: deltad,
@@ -203,7 +211,7 @@ function Home(props) {
             : 0
           : 0;
 
-        ALL_DATA[state]['TT']['total'] = {
+        ALL_DATA[state]['TT'][dt]['total'] = {
           confirmed: totalc,
           active: totalc - totalr,
           deceased: totald,
@@ -325,7 +333,7 @@ function Home(props) {
         const futureTimeseriesData = responses[1].data;
 
         pastTimeseriesData = convertStructure(pastTimeseriesData);
-
+        console.log('CONVERTED STRUCTURE');
         const mergedTimeseriesData = merge(
           pastTimeseriesData,
           futureTimeseriesData,
