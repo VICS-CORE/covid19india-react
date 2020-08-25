@@ -42,7 +42,6 @@ function merge(past, future, today) {
         if (dt === today) continue;
         merged[st][dt] = {};
         merged[st][dt]['delta'] = past[st][dt]['delta'];
-        console.log('TOTAL: ', past[st][dt]['total']);
         merged[st][dt]['total'] =
           past[st][dt]['total'] !== {}
             ? past[st][dt]['total']
@@ -51,22 +50,14 @@ function merge(past, future, today) {
     } else {
       for (const district in past[st]) {
         merged[st][district] = {};
-        // console.log('DISTRICT: ', district, past[st][district]);
         for (const dt in past[st][district]) {
           if (dt === today) continue;
           merged[st][district][dt] = {};
           merged[st][district][dt]['delta'] = past[st][district][dt]['delta'];
 
-          console.log(
-            'PAST DISTRICT: ',
-            district,
-            past[st][district][dt]['total']
-          );
-
           if (past[st][district][dt]['total'] !== {}) {
             merged[st][district][dt]['total'] = past[st][district][dt]['total'];
           } else {
-            // console.log('NOT PRESENT');
             merged[st][district][dt]['total'] = {
               active: 0,
               confirmed: 0,
@@ -78,12 +69,12 @@ function merge(past, future, today) {
       }
     }
   }
-  console.log('PAST MERGED DATA: ', merged);
+
   for (const st in future) {
     if (st === 'TT') {
       for (const dt in future[st]) {
         if (dt < today) continue;
-        // console.log(future[st][district]);
+
         merged[st][dt] = {};
         const dt_minus_1 = yesterday(dt);
         merged[st][dt]['delta'] = future[st][dt]['delta'];
@@ -97,21 +88,12 @@ function merge(past, future, today) {
       for (const district in future[st]) {
         for (const dt in future[st][district]) {
           if (dt < today) continue;
-          // console.log('DATE: ', dt);
-          // console.log('MERGED_DT: ', district, merged[st][district]);
           merged[st][district][dt] = {};
           const dt_minus_1 = yesterday(dt);
-          // console.log('DELTA: ', merged[st][district][dt]['delta']);
           merged[st][district][dt]['delta'] = future[st][district][dt]['delta'];
           merged[st][district][dt]['total'] = {};
 
           for (const k in merged[st][district][dt]['delta']) {
-            // console.log(
-            //   'DISTRICT: ',
-            //   district,
-            //   merged[st][district][dt_minus_1]['total']
-            // );
-
             merged[st][district][dt]['total'][k] =
               merged[st][district][dt_minus_1]['total'][k] +
               merged[st][district][dt]['delta'][k];
@@ -120,7 +102,6 @@ function merge(past, future, today) {
       }
     }
   }
-  console.log('MERGED: ', merged);
   return merged;
 }
 
@@ -151,13 +132,11 @@ function Home(props) {
     const ALL_DATA = {};
 
     for (const dt in timeseries) {
-      // console.log('DATE: ', dt);
       for (const st in ALL_STATES) {
         const state = ALL_STATES[st];
 
         if (!ALL_DATA[state]) ALL_DATA[state] = {};
         const stateObj = timeseries[dt][state] || {};
-        // console.log('STATE_OBJ: ', state, stateObj);
 
         const deltac = stateObj['delta']
           ? stateObj['delta']['confirmed']
@@ -240,7 +219,6 @@ function Home(props) {
         for (const ds in ALL_DISTTS[state]) {
           const district = ALL_DISTTS[state][ds];
 
-          // console.log('DISTRICT: ', district);
           if (!ALL_DATA[state][district]) {
             ALL_DATA[state][district] = {};
           }
@@ -315,8 +293,6 @@ function Home(props) {
       }
     }
 
-    console.log('ALL_DATA: ', ALL_DATA);
-
     return ALL_DATA;
   };
 
@@ -333,7 +309,7 @@ function Home(props) {
         const futureTimeseriesData = responses[1].data;
 
         pastTimeseriesData = convertStructure(pastTimeseriesData);
-        console.log('CONVERTED STRUCTURE');
+
         const mergedTimeseriesData = merge(
           pastTimeseriesData,
           futureTimeseriesData,
