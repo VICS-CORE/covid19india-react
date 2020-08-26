@@ -60,7 +60,7 @@ function PureFineprintTop() {
   return (
     <React.Fragment>
       <h5 className="text">
-        {t('Model v2')}.{t(' Predictions are updated everyday')}
+        {t('Model v23.1155')}.{t(' Predictions are updated everyday')}
         <br />
         {t('Recovered and Deceased are statically computed.')}
         {/* <Link to="/about" style={{color: '#6c757d'}}>
