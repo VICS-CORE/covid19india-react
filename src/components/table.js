@@ -184,13 +184,18 @@ function Table({data, regionHighlighted, setRegionHighlighted}) {
         {!isVisible && (
           <span className="intersection" ref={tableElement}></span>
         )}
+        {/* {console.log('data: ', data)} */}
 
-        <Row
-          key={'TT'}
-          data={data['TT']}
-          stateCode={'TT'}
-          {...{regionHighlighted, setRegionHighlighted}}
-        />
+        {/* {console.log(data)} */}
+
+        {Object.keys(data).map((st) => (
+          <Row
+            key={st}
+            data={data[st]}
+            stateCode={st}
+            {...{regionHighlighted, setRegionHighlighted}}
+          />
+        ))}
       </animated.div>
     </React.Fragment>
   );

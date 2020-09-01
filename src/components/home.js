@@ -37,23 +37,68 @@ function merge(past, future, today) {
   const merged = {};
   for (const st in past) {
     merged[st] = {};
-    for (const dt in past[st]) {
-      if (dt === today) continue;
-      merged[st][dt] = {};
-      merged[st][dt]['delta'] = past[st][dt]['delta'];
-      merged[st][dt]['total'] = past[st][dt]['total'];
+    if (st === 'TT') {
+      for (const dt in past[st]) {
+        if (dt === today) continue;
+        merged[st][dt] = {};
+        merged[st][dt]['delta'] = past[st][dt]['delta'];
+        merged[st][dt]['total'] =
+          past[st][dt]['total'] !== {}
+            ? past[st][dt]['total']
+            : {active: 0, confirmed: 0, deceased: 0, recovered: 0};
+      }
+    } else {
+      for (const district in past[st]) {
+        merged[st][district] = {};
+        for (const dt in past[st][district]) {
+          if (dt === today) continue;
+          merged[st][district][dt] = {};
+          merged[st][district][dt]['delta'] = past[st][district][dt]['delta'];
+
+          if (past[st][district][dt]['total'] !== {}) {
+            merged[st][district][dt]['total'] = past[st][district][dt]['total'];
+          } else {
+            merged[st][district][dt]['total'] = {
+              active: 0,
+              confirmed: 0,
+              deceased: 0,
+              recovered: 0,
+            };
+          }
+        }
+      }
     }
   }
+
   for (const st in future) {
-    for (const dt in future[st]) {
-      if (dt < today) continue;
-      merged[st][dt] = {};
-      const dt_minus_1 = yesterday(dt);
-      merged[st][dt]['delta'] = future[st][dt]['delta'];
-      merged[st][dt]['total'] = {};
-      for (const k in merged[st][dt]['delta']) {
-        merged[st][dt]['total'][k] =
-          merged[st][dt_minus_1]['total'][k] + merged[st][dt]['delta'][k];
+    if (st === 'TT') {
+      for (const dt in future[st]) {
+        if (dt < today) continue;
+
+        merged[st][dt] = {};
+        const dt_minus_1 = yesterday(dt);
+        merged[st][dt]['delta'] = future[st][dt]['delta'];
+        merged[st][dt]['total'] = {};
+        for (const k in merged[st][dt]['delta']) {
+          merged[st][dt]['total'][k] =
+            merged[st][dt_minus_1]['total'][k] + merged[st][dt]['delta'][k];
+        }
+      }
+    } else {
+      for (const district in future[st]) {
+        for (const dt in future[st][district]) {
+          if (dt < today) continue;
+          merged[st][district][dt] = {};
+          const dt_minus_1 = yesterday(dt);
+          merged[st][district][dt]['delta'] = future[st][district][dt]['delta'];
+          merged[st][district][dt]['total'] = {};
+
+          for (const k in merged[st][district][dt]['delta']) {
+            merged[st][district][dt]['total'][k] =
+              merged[st][district][dt_minus_1]['total'][k] +
+              merged[st][district][dt]['delta'][k];
+          }
+        }
       }
     }
   }
@@ -73,17 +118,197 @@ function Home(props) {
   const [timeseries, setTimeseries] = useState({});
   const {t} = useTranslation();
 
+  const convertStructure = (timeseries) => {
+    let ALL_STATES = Object.keys(timeseries['2020-07-01']);
+    ALL_STATES = ALL_STATES.filter((STATE) => STATE !== 'UN');
+    const ALL_DISTTS = {};
+    for (const st in ALL_STATES) {
+      const state = ALL_STATES[st];
+      if (state == 'TT') continue;
+      ALL_DISTTS[state] = Object.keys(
+        timeseries['2020-07-01'][state]['districts']
+      );
+    }
+    const ALL_DATA = {};
+
+    for (const dt in timeseries) {
+      for (const st in ALL_STATES) {
+        const state = ALL_STATES[st];
+
+        if (!ALL_DATA[state]) ALL_DATA[state] = {};
+        const stateObj = timeseries[dt][state] || {};
+
+        const deltac = stateObj['delta']
+          ? stateObj['delta']['confirmed']
+            ? stateObj['delta']['confirmed']
+            : 0
+          : 0;
+        const deltad = stateObj['delta']
+          ? stateObj['delta']['deceased']
+            ? stateObj['delta']['deceased']
+            : 0
+          : 0;
+        const deltar = stateObj['delta']
+          ? stateObj['delta']['recovered']
+            ? stateObj['delta']['recovered']
+            : 0
+          : 0;
+        const deltat = stateObj['delta']
+          ? stateObj['delta']['tested']
+            ? stateObj['delta']['tested']
+            : 0
+          : 0;
+
+        ALL_DATA[state]['TT'] = {};
+        ALL_DATA[state]['TT'][dt] = {};
+        ALL_DATA[state]['TT'][dt]['delta'] = {
+          confirmed: deltac,
+          active: deltac - deltar,
+          deceased: deltad,
+          recovered: deltar,
+          tested: deltat,
+        };
+
+        const totalc = stateObj['total']
+          ? stateObj['total']['confirmed']
+            ? stateObj['total']['confirmed']
+            : 0
+          : 0;
+        const totald = stateObj['total']
+          ? stateObj['total']['deceased']
+            ? stateObj['total']['deceased']
+            : 0
+          : 0;
+        const totalr = stateObj['total']
+          ? stateObj['total']['recovered']
+            ? stateObj['total']['recovered']
+            : 0
+          : 0;
+        const totalt = stateObj['total']
+          ? stateObj['total']['tested']
+            ? stateObj['total']['tested']
+            : 0
+          : 0;
+
+        ALL_DATA[state]['TT'][dt]['total'] = {
+          confirmed: totalc,
+          active: totalc - totalr,
+          deceased: totald,
+          recovered: totalr,
+          tested: totalt,
+        };
+
+        if (state == 'TT') {
+          ALL_DATA[state]['delta'] = {
+            confirmed: deltac,
+            active: deltac - deltar,
+            deceased: deltad,
+            recovered: deltar,
+            tested: deltat,
+          };
+          ALL_DATA[state]['total'] = {
+            confirmed: totalc,
+            active: totalc - totalr,
+            deceased: totald,
+            recovered: totalr,
+            tested: totalt,
+          };
+
+          continue;
+        }
+        for (const ds in ALL_DISTTS[state]) {
+          const district = ALL_DISTTS[state][ds];
+
+          if (!ALL_DATA[state][district]) {
+            ALL_DATA[state][district] = {};
+          }
+          if (!ALL_DATA[state][district][dt]) {
+            ALL_DATA[state][district][dt] = {};
+          }
+
+          const districtObj = stateObj['districts']
+            ? stateObj['districts'][district]
+              ? stateObj['districts'][district]
+              : 0
+            : {};
+
+          const deltac = districtObj['delta']
+            ? districtObj['delta']['confirmed']
+              ? districtObj['delta']['confirmed']
+              : 0
+            : 0;
+          const deltad = districtObj['delta']
+            ? districtObj['delta']['deceased']
+              ? districtObj['delta']['deceased']
+              : 0
+            : 0;
+          const deltar = districtObj['delta']
+            ? districtObj['delta']['recovered']
+              ? districtObj['delta']['recovered']
+              : 0
+            : 0;
+          const deltat = districtObj['delta']
+            ? districtObj['delta']['tested']
+              ? districtObj['delta']['tested']
+              : 0
+            : 0;
+
+          ALL_DATA[state][district][dt]['delta'] = {
+            confirmed: deltac,
+            active: deltac - deltar,
+            deceased: deltad,
+            recovered: deltar,
+            tested: deltat,
+          };
+
+          const totalc = districtObj['total']
+            ? districtObj['total']['confirmed']
+              ? districtObj['total']['confirmed']
+              : 0
+            : 0;
+          const totald = districtObj['total']
+            ? districtObj['total']['deceased']
+              ? districtObj['total']['deceased']
+              : 0
+            : 0;
+          const totalr = districtObj['total']
+            ? districtObj['total']['recovered']
+              ? districtObj['total']['recovered']
+              : 0
+            : 0;
+          const totalt = districtObj['total']
+            ? districtObj['total']['tested']
+              ? districtObj['total']['tested']
+              : 0
+            : 0;
+
+          ALL_DATA[state][district][dt]['total'] = {
+            confirmed: totalc,
+            active: totalc - totalr,
+            deceased: totald,
+            recovered: totalr,
+            tested: totalt,
+          };
+        }
+      }
+    }
+
+    return ALL_DATA;
+  };
+
   useMemo(() => {
     const pastTimeseries = axios.get(
-      'https://api.covid19india.org/v3/min/timeseries.min.json'
+      'https://api.covid19india.org/v4/data-all.json'
     );
     const futureTimeseries = axios.get(
-      'https://vics-core.github.io/covid-api/predictions.json'
+      'https://raw.githubusercontent.com/coffeeDev98/covid19india-react/predictions/predictions_districts.json'
     );
     axios.all([pastTimeseries, futureTimeseries]).then(
       axios.spread((...responses) => {
-        const pastTimeseriesData = responses[0].data;
+        let pastTimeseriesData = responses[0].data;
         const futureTimeseriesData = responses[1].data;
+
+        pastTimeseriesData = convertStructure(pastTimeseriesData);
 
         const mergedTimeseriesData = merge(
           pastTimeseriesData,
@@ -96,10 +321,19 @@ function Home(props) {
   }, [today]);
 
   useMemo(() => {
-    let ret = {};
+    const ret = {};
     for (const st in timeseries) {
-      if (timeseries.hasOwnProperty(st)) {
-        ret[st] = timeseries[st][date];
+      ret[st] = {};
+      if (st === 'TT') {
+        if (timeseries.hasOwnProperty(st)) {
+          ret[st] = timeseries[st][date];
+        }
+      } else {
+        for (const district in timeseries[st]) {
+          if (timeseries.hasOwnProperty(st)) {
+            ret[st][district] = timeseries[st][district][date];
+          }
+        }
       }
     }
     setData(ret);
