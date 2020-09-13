@@ -3480,6 +3480,23 @@ footer {
   }
 }
 
+.States {
+  margin-left: 6.5rem;
+  margin-right: 5rem;
+
+  .charts {
+    display: flex;
+    flex-wrap: wrap;
+    flex-grow: 1;
+  }
+
+  .chart {
+    flex-grow: 1;
+    min-width: 300px;
+    flex-basis: 200px;
+  }
+}
+
 .Patients {
   align-self: center;
   display: flex;
@@ -5027,6 +5044,11 @@ footer {
     input#play-range {
       width: 60% !important;
     }
+  }
+
+  .States {
+    margin-left: unset;
+    margin-right: 1rem;
   }
 }
 

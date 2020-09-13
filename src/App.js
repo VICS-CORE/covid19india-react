@@ -34,6 +34,10 @@ const VideoPlayer = lazy(
   () => import('./components/videoplayer') /* webpackChunkName: "VideoPlayer" */
 );
 
+const States = lazy(
+  () => import('./components/states') /* webpackChunkName: "States" */
+);
+
 const schemaMarkup = {
   '@context': 'http://schema.org/',
   '@type': 'NonProfit',
@@ -83,6 +87,12 @@ function App() {
       pageLink: '/videoplayer',
       view: VideoPlayer,
       displayName: 'Video Player',
+      showInNavbar: false,
+    },
+    {
+      pageLink: '/states',
+      view: States,
+      displayName: 'States Prediction Charts',
       showInNavbar: false,
     },
   ];
