@@ -5,8 +5,8 @@ import axios from 'axios';
 import HighchartsReact from 'highcharts-react-official';
 import Highcharts from 'highcharts/highstock';
 import {map, each, orderBy, cloneDeep, times} from 'lodash';
-import React, {useState, useEffect} from 'react';
 import queryString from 'query-string';
+import React, {useState, useEffect} from 'react';
 import {Helmet} from 'react-helmet';
 
 function States() {
@@ -24,37 +24,38 @@ function States() {
 
     function updateSeriesData(data) {
       each(data, function (v, state) {
-        let max=0;
-        if (state === 'TT'){
+        const {predictions, max} = getSeriesData(v);
+        if (state === 'TT') {
           const ttOptions = cloneDeep(chartOptions);
-          const predictions = map(v, function (result, date) {
-            const dailyCofirmed = result.delta.confirmed || 0;
-            max = max > dailyCofirmed ? max : dailyCofirmed;
-            return {x: new Date(date), y: dailyCofirmed};
-          });
           ttOptions.title.text = 'Aggregated Prediction';
           ttOptions.series = {name: state, data: predictions, max: max};
           setTotalOptions(ttOptions);
+        } else {
+          chartOptions.series.push({name: state, data: predictions, max: max});
         }
-        const predictions = map(v, function (result, date) {
-          const dailyCofirmed = result.delta.confirmed || 0;
-          max = max > dailyCofirmed ? max : dailyCofirmed;
-          return {x: new Date(date), y: dailyCofirmed};
-        });
-        chartOptions.series.push({name: state, data: predictions, max: max});
       });
       drawTopCharts();
     }
 
-    function drawTopCharts(){
-      chartOptions.series=orderBy(chartOptions.series, 'max', 'desc');
+    function getSeriesData(v) {
+      let max = 0;
+      const predictions = map(v, function (result, date) {
+        const dailyCofirmed = result.delta.confirmed || 0;
+        max = max > dailyCofirmed ? max : dailyCofirmed;
+        return {x: new Date(date), y: dailyCofirmed};
+      });
+      return {predictions: predictions, max: max};
+    }
+
+    function drawTopCharts() {
+      chartOptions.series = orderBy(chartOptions.series, 'max', 'desc');
       const topStates = [];
-      times(3, function(i){
+      times(3, function (i) {
         const option = cloneDeep(chartOptions);
         option.title.text = titles[i];
-        option.series = chartOptions.series.slice(i*7,(i+1)*7);
-        topStates.push(option)
-      })
+        option.series = chartOptions.series.slice(i * 7, (i + 1) * 7);
+        topStates.push(option);
+      });
       setOptions(topStates);
     }
   }, []);
@@ -85,7 +86,10 @@ function States() {
           );
         })}
       </div>
-      <HighchartsReact options={totalOptions} highcharts={Highcharts}></HighchartsReact>
+      <HighchartsReact
+        options={totalOptions}
+        highcharts={Highcharts}
+      ></HighchartsReact>
       <div>Model: {model}</div>
       <Footer />
     </div>
