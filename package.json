@@ -39,6 +39,7 @@
     "leaflet": "^1.6.0",
     "leaflet-knn": "^0.1.0",
     "lodash": "^4.17.20",
+    "mdbreact": "^4.27.0",
     "react": "^16.13.1",
     "react-content-loader": "^5.0.4",
     "react-date-picker": "^8.0.1",

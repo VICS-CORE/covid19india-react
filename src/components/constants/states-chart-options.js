@@ -52,7 +52,28 @@ export const chartOptions = {
 };
 
 export const titles = {
-  0: "Top Seven States",
-  1: "Second Highest Seven States",
-  2: "Third Highest Seven States"
-}
+  0: 'Top Seven States',
+  1: 'Second Highest Seven States',
+  2: 'Third Highest Seven States',
+};
+
+export const restOfTheStates = {
+  columns: [
+    {
+      label: 'State',
+      field: 'code',
+      sort: 'asc',
+    },
+    {
+      label: 'Peak Confirmed Cases',
+      field: 'c',
+      sort: 'asc',
+    },
+    {
+      label: 'Peak Date',
+      field: 'date',
+      sort: 'asc',
+    },
+  ],
+  rows: [],
+};

@@ -1,17 +1,27 @@
-import {chartOptions, titles} from './constants/states-chart-options';
+import {
+  chartOptions,
+  titles,
+  restOfTheStates,
+} from './constants/states-chart-options';
 import Footer from './footer';
 
 import axios from 'axios';
+import {format} from 'date-fns';
 import HighchartsReact from 'highcharts-react-official';
 import Highcharts from 'highcharts/highstock';
 import {map, each, orderBy, cloneDeep, times} from 'lodash';
+import {MDBDataTable} from 'mdbreact';
 import queryString from 'query-string';
 import React, {useState, useEffect} from 'react';
 import {Helmet} from 'react-helmet';
+import '@fortawesome/fontawesome-free/css/all.min.css';
+import 'bootstrap-css-only/css/bootstrap.min.css';
+import 'mdbreact/dist/css/mdb.css';
 
 function States() {
   const [options, setOptions] = useState([]);
   const [totalOptions, setTotalOptions] = useState({});
+  const [restOfTheStatesData, setRestOfTheStatesData] = useState({});
   const queryStringParams = queryString.parse(window.location.search);
   const model = queryStringParams && queryStringParams.model;
 
@@ -24,27 +34,42 @@ function States() {
 
     function updateSeriesData(data) {
       each(data, function (v, state) {
-        const {predictions, max} = getSeriesData(v);
+        const {predictions, max, maxDate} = getSeriesData(v);
         if (state === 'TT') {
           const ttOptions = cloneDeep(chartOptions);
           ttOptions.title.text = 'Aggregated Prediction';
-          ttOptions.series = {name: state, data: predictions, max: max};
+          ttOptions.series = {
+            name: state,
+            data: predictions,
+            max: max,
+            maxDate: maxDate,
+          };
           setTotalOptions(ttOptions);
         } else {
-          chartOptions.series.push({name: state, data: predictions, max: max});
+          chartOptions.series.push({
+            name: state,
+            data: predictions,
+            max: max,
+            maxDate: maxDate,
+          });
         }
       });
       drawTopCharts();
+      setDataForTable();
     }
 
     function getSeriesData(v) {
       let max = 0;
+      let maxDate;
       const predictions = map(v, function (result, date) {
         const dailyCofirmed = result.delta.confirmed || 0;
-        max = max > dailyCofirmed ? max : dailyCofirmed;
+        if (max < dailyCofirmed) {
+          max = dailyCofirmed;
+          maxDate = new Date(date);
+        }
         return {x: new Date(date), y: dailyCofirmed};
       });
-      return {predictions: predictions, max: max};
+      return {predictions: predictions, max: max, maxDate: maxDate};
     }
 
     function drawTopCharts() {
@@ -57,6 +82,18 @@ function States() {
         topStates.push(option);
       });
       setOptions(topStates);
+    }
+
+    function setDataForTable() {
+      console.log('chartOptions.series', chartOptions.series.slice(21));
+      each(chartOptions.series.slice(21), function (series) {
+        restOfTheStates.rows.push({
+          code: series.name,
+          c: series.max,
+          date: format(series.maxDate, 'dd MMM, yyyy'),
+        });
+      });
+      setRestOfTheStatesData(restOfTheStates);
     }
   }, []);
 
@@ -90,6 +127,7 @@ function States() {
         options={totalOptions}
         highcharts={Highcharts}
       ></HighchartsReact>
+      <MDBDataTable striped bordered small data={restOfTheStatesData} />
       <div>Model: {model}</div>
       <Footer />
     </div>
