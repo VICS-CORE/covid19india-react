@@ -3483,8 +3483,19 @@ footer {
 .States {
   margin-left: 6.5rem;
   margin-right: 5rem;
+  margin-top: 2rem;
+
+  .states-table{
+    margin-top: 3rem;
+    margin-left: 3rem;
+
+    table tr th, td {
+      width: 350px;
+    }
+  }
 
   .charts {
+    margin-top: 2rem;
     display: flex;
     flex-wrap: wrap;
     flex-grow: 1;
@@ -5049,6 +5060,14 @@ footer {
   .States {
     margin-left: unset;
     margin-right: 1rem;
+
+    .states-table {
+      margin-left: unset;
+
+      table tr th, td {
+        width: 30% !important;
+      }
+    }
   }
 }
 

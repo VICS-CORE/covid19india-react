@@ -3,6 +3,7 @@ import {
   titles,
   restOfTheStates,
 } from './constants/states-chart-options';
+import {STATE_NAMES} from '../constants'
 import Footer from './footer';
 
 import axios from 'axios';
@@ -23,7 +24,7 @@ function States() {
   const [totalOptions, setTotalOptions] = useState({});
   const [restOfTheStatesData, setRestOfTheStatesData] = useState({});
   const queryStringParams = queryString.parse(window.location.search);
-  const model = queryStringParams && queryStringParams.model;
+  const model = (queryStringParams && queryStringParams.model) || '1.1740';
 
   useEffect(() => {
     axios
@@ -85,10 +86,9 @@ function States() {
     }
 
     function setDataForTable() {
-      console.log('chartOptions.series', chartOptions.series.slice(21));
       each(chartOptions.series.slice(21), function (series) {
         restOfTheStates.rows.push({
-          code: series.name,
+          code: STATE_NAMES[series.name],
           c: series.max,
           date: format(series.maxDate, 'dd MMM, yyyy'),
         });
@@ -110,6 +110,7 @@ function States() {
 
       <div className="header fadeInUp" style={{animationDelay: '0.3s'}}>
         <h1>States Predictions</h1>
+        <h2>Model: {model}</h2>
       </div>
       <div className="charts">
         {options.map((option, index) => {
@@ -127,8 +128,11 @@ function States() {
         options={totalOptions}
         highcharts={Highcharts}
       ></HighchartsReact>
-      <MDBDataTable striped bordered small data={restOfTheStatesData} />
-      <div>Model: {model}</div>
+      <div className="states-table">
+        <MDBDataTable hover searchTop searchBottom={false} pagingTop pagingBottom={false} responsive striped bordered data={restOfTheStatesData} autoWidth>
+          <caption>Peaks</caption>
+        </MDBDataTable>
+      </div>
       <Footer />
     </div>
   );
