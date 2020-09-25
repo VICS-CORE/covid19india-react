@@ -86,12 +86,15 @@ function States() {
     }
 
     function setDataForTable() {
-      each(chartOptions.series.slice(21), function (series) {
-        restOfTheStates.rows.push({
-          code: STATE_NAMES[series.name],
-          c: series.max,
-          date: format(series.maxDate, 'dd MMM, yyyy'),
-        });
+      each(chartOptions.series, function (series) {
+        if(series.data.length){
+          restOfTheStates.rows.push({
+            code: STATE_NAMES[series.name],
+            c: series.max,
+            date: format(series.maxDate, 'dd MMM, yyyy'),
+            width: 200
+          });
+        }
       });
       setRestOfTheStatesData(restOfTheStates);
     }
