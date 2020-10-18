@@ -3,8 +3,9 @@ import {
   titles,
   restOfTheStates,
 } from './constants/states-chart-options';
-import {STATE_NAMES} from '../constants'
 import Footer from './footer';
+
+import {STATE_NAMES} from '../constants';
 
 import axios from 'axios';
 import {format} from 'date-fns';
@@ -28,7 +29,7 @@ function States() {
 
   useEffect(() => {
     axios
-      .get(`https://vics-core.github.io/covid-api/predictions.json`)
+      .get(`https://vics-core.github.io/covid-api/mi/${model}.json`)
       .then((response) => {
         updateSeriesData(response.data);
       });
@@ -87,18 +88,18 @@ function States() {
 
     function setDataForTable() {
       each(chartOptions.series, function (series) {
-        if(series.data.length){
+        if (series.data.length) {
           restOfTheStates.rows.push({
             code: STATE_NAMES[series.name],
             c: series.max,
             date: format(series.maxDate, 'dd MMM, yyyy'),
-            width: 200
+            width: 200,
           });
         }
       });
       setRestOfTheStatesData(restOfTheStates);
     }
-  }, []);
+  }, [model]);
 
   return (
     <div className="States">
@@ -132,7 +133,18 @@ function States() {
         highcharts={Highcharts}
       ></HighchartsReact>
       <div className="states-table">
-        <MDBDataTable hover searchTop searchBottom={false} pagingTop pagingBottom={false} responsive striped bordered data={restOfTheStatesData} autoWidth>
+        <MDBDataTable
+          hover
+          searchTop
+          searchBottom={false}
+          pagingTop
+          pagingBottom={false}
+          responsive
+          striped
+          bordered
+          data={restOfTheStatesData}
+          autoWidth
+        >
           <caption>Peaks</caption>
         </MDBDataTable>
       </div>
